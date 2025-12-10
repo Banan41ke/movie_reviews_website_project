@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ movie.title }}</title>
+</head>
+<body>
+
+<a href="{% url 'movie_list' %}">← Назад к фильмам</a>
+
+<h1>{{ movie.title }}</h1>
+
+<p>Год выпуска: {{ movie.release_year }}</p>
+
+<p>{{ movie.description }}</p>
+
+<p>
+    Жанры:
+    {% for genre in movie.genres.all %}
+        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+</p>
+
+<p>⭐ Средний рейтинг: {{ movie.average_rating }}</p>
+
+{% if movie.poster %}
+    <img src="{{ movie.poster.url }}" width="250">
+{% endif %}
+
+<hr>
+
+<h2>Отзывы</h2>
+
+{% for review in reviews %}
+    <div>
+        <strong>{{ review.user.username }}</strong>
+        — ⭐ {{ review.rating }}<br>
+        {{ review.text }}
+    </div>
+    <hr>
+{% empty %}
+    <p>Пока нет отзывов</p>
+{% endfor %}
+
+{% if user.is_authenticated and can_review %}
+    <a href="{% url 'add_review' movie.id %}">Оставить отзыв</a>
+{% elif not user.is_authenticated %}
+    <p>Войдите, чтобы оставить отзыв</p>
+{% else %}
+    <p>Вы уже оставили отзыв на этот фильм</p>
+{% endif %}
+
+</body>
+</html>

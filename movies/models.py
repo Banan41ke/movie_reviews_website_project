@@ -41,6 +41,7 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField()
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(blank=True)
 
     class Meta:
         constraints = [

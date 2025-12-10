@@ -1,0 +1,37 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}MovieReviews{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{% url 'movie_list' %}">MovieReviews</a>
+      <nav class="nav">
+        <a href="{% url 'movie_list' %}">Главная</a>
+        {% if request.user.is_authenticated %}
+          <span class="muted">Привет, {{ request.user.username }}</span>
+          <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+          <a href="{% url 'login' %}">Войти</a>
+          <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© {{ now.year }} MovieReviews — учебный проект</small>
+    </div>
+  </footer>
+</body>
+</html>
