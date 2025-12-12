@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Вход | MovieReviews</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{% url 'movie_list' %}">MovieReviews</a>
+      <nav class="nav">
+        <a href="{% url 'movie_list' %}">Главная</a>
+        <a href="{% url 'register' %}">Регистрация</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container auth-page">
+    <div class="auth-form">
+      <h1>Вход</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+      </form>
+      {% if form.errors %}
+        <p class="error">Неверное имя пользователя или пароль.</p>
+      {% endif %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 MovieReviews</p>
+    </div>
+  </footer>
+</body>
+</html>

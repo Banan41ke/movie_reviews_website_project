@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ movie.title }} - MovieReviews</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{% url 'movie_list' %}">MovieReviews</a>
+      <nav class="nav">
+        <a href="{% url 'movie_list' %}">Главная</a>
+        {% if request.user.is_authenticated %}
+          <span class="muted">Привет, {{ request.user.username }}</span>
+          <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+          <a href="{% url 'login' %}">Войти</a>
+          <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container movie-detail">
+    <div class="movie-detail-card">
+      <div class="poster">
+        {% if movie.poster %}
+            <img src="{{ movie.poster.url }}" alt="{{ movie.title }} Poster">
+        {% else %}
+            <img src="{% static 'images/default-poster.jpg' %}" alt="Default Poster">
+        {% endif %}
+      </div>
+      <div class="info">
+        <h1>{{ movie.title }}</h1>
+        <p>{{ movie.description }}</p>
+        <p><strong>Год выпуска:</strong> {{ movie.release_year }}</p>
+        <p><strong>Жанр:</strong> {{ movie.genre }}</p>
+        <a href="{% url 'movie_list' %}" class="btn">Назад к фильмам</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 MovieReviews. Все права защищены.</p>
+    </div>
+  </footer>
+</body>
+</html>

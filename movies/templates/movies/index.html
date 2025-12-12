@@ -1,13 +1,15 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}MovieReviews{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Header -->
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{% url 'movie_list' %}">MovieReviews</a>
@@ -24,13 +26,27 @@
     </div>
   </header>
 
+  <!-- Main Content -->
   <main class="container">
-    {% block content %}{% endblock %}
+    <h1>Список фильмов</h1>
+    <div class="movies-grid">
+      {% for movie in movies %}
+        <div class="movie-card">
+          <img src="{{ movie.poster.url }}" alt="{{ movie.title }} Poster" class="movie-poster">
+          <h2>{{ movie.title }}</h2>
+          <p>{{ movie.description|truncatewords:20 }}</p>
+          <a href="{% url 'movie_detail' movie.id %}" class="btn">Подробнее</a>
+        </div>
+      {% empty %}
+        <p>Фильмы не найдены.</p>
+      {% endfor %}
+    </div>
   </main>
 
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
-      <small>© {{ now.year }} MovieReviews — учебный проект</small>
+      <p>&copy; 2025 MovieReviews. Все права защищены.</p>
     </div>
   </footer>
 </body>

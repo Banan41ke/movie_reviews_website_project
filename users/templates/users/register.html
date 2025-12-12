@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Регистрация | MovieReviews</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{% url 'movie_list' %}">MovieReviews</a>
+      <nav class="nav">
+        <a href="{% url 'movie_list' %}">Главная</a>
+        <a href="{% url 'login' %}">Вход</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container auth-page">
+    <div class="auth-form">
+      <h1>Регистрация</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зарегистрироваться</button>
+      </form>
+      {% if form.errors %}
+        <ul class="errorlist">
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 MovieReviews</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -16,6 +16,7 @@ class Movie(models.Model):
     genres = models.ManyToManyField(Genre, related_name="movies")
     poster = models.ImageField(upload_to="posters/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    genre = models.CharField(max_length=100)
 
     def average_rating(self):
         reviews = self.reviews.all()
