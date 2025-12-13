@@ -1,3 +1,4 @@
+# movies/models.py
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -18,10 +19,9 @@ class Movie(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def average_rating(self):
-        reviews = self.reviews.all()
-        if reviews.count() == 0:
-            return 0
-        return round(sum(r.rating for r in reviews) / reviews.count(), 1)
+        from django.db.models import Avg  # Импорт внутри функции
+        avg = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        return round(avg, 1) if avg else 0
 
     def __str__(self):
         return self.title
