@@ -2,40 +2,124 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Вход | MovieReviews</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Movie Reviews</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            font-size: 2em;
+            color: #48dbfb;
+            margin-bottom: 10px;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+        }
+
+        .auth-form input:focus {
+            outline: none;
+            border-color: #48dbfb;
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #48dbfb, #0abde3);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-auth:hover {
+            background: linear-gradient(45deg, #0abde3, #48dbfb);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+        }
+
+        .auth-links a {
+            color: #48dbfb;
+            text-decoration: none;
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+    </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="{% url 'movie_list' %}">MovieReviews</a>
-      <nav class="nav">
-        <a href="{% url 'movie_list' %}">Главная</a>
-        <a href="{% url 'register' %}">Регистрация</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="container auth-page">
-    <div class="auth-form">
-      <h1>Вход</h1>
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Войти</button>
-      </form>
-      {% if form.errors %}
-        <p class="error">Неверное имя пользователя или пароль.</p>
-      {% endif %}
-    </div>
-  </main>
-
-  <footer class="site-footer">
     <div class="container">
-      <p>&copy; 2025 MovieReviews</p>
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> На главную
+        </a>
+
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1><i class="fas fa-sign-in-alt"></i> Вход в аккаунт</h1>
+                <p>Войдите, чтобы оставлять отзывы</p>
+            </div>
+
+            {% if form.errors %}
+            <div class="error-message">
+                Неверное имя пользователя или пароль.
+            </div>
+            {% endif %}
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Имя пользователя" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+            </form>
+
+            <div class="auth-links">
+                <p>Ещё нет аккаунта? <a href="{% url 'register' %}">Зарегистрируйтесь</a></p>
+            </div>
+        </div>
     </div>
-  </footer>
 </body>
 </html>

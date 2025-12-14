@@ -1,35 +1,153 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Добавить отзыв</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оставить отзыв | Movie Reviews</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star-rating-input i');
+            const ratingValue = document.getElementById('ratingValue');
+            const hiddenRating = document.getElementById('hiddenRating');
+            let currentRating = 5;
+
+            // Инициализация звезд
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    currentRating = index + 1;
+                    updateStars();
+                });
+
+                star.addEventListener('mouseover', () => {
+                    highlightStars(index);
+                });
+            });
+
+            document.querySelector('.star-rating-input').addEventListener('mouseleave', () => {
+                updateStars();
+            });
+
+            function updateStars() {
+                stars.forEach((star, index) => {
+                    if (index < currentRating) {
+                        star.classList.remove('far');
+                        star.classList.add('fas', 'active');
+                    } else {
+                        star.classList.remove('fas', 'active');
+                        star.classList.add('far');
+                    }
+                });
+                ratingValue.textContent = currentRating;
+                hiddenRating.value = currentRating;
+            }
+
+            function highlightStars(index) {
+                stars.forEach((star, i) => {
+                    if (i <= index) {
+                        star.classList.remove('far');
+                        star.classList.add('fas');
+                    } else {
+                        star.classList.remove('fas');
+                        star.classList.add('far');
+                    }
+                });
+            }
+
+            // Инициализация
+            updateStars();
+
+            // Обработчик формы
+            document.getElementById('reviewForm').addEventListener('submit', function(e) {
+                const text = document.getElementById('reviewText').value.trim();
+                if (text.length < 10) {
+                    e.preventDefault();
+                    alert('Пожалуйста, напишите отзыв длиной хотя бы 10 символов.');
+                    return false;
+                }
+                alert('Спасибо за ваш отзыв! Он будет опубликован после проверки.');
+                return true;
+            });
+        });
+    </script>
 </head>
 <body>
+    <div class="container">
+        <a href="../../../templates" class="back-link">
+            <i class="fas fa-arrow-left"></i> Назад к фильму
+        </a>
 
-<h1>Оставить отзыв</h1>
+        <div class="review-form-container">
+            <div class="form-header">
+                <h1><i class="fas fa-edit"></i> Написать отзыв</h1>
+                <p style="color: #aaa;">Поделитесь своим мнением о фильме</p>
+            </div>
 
-<form method="post">
-    {% csrf_token %}
+            <!-- Информация о фильме -->
+            <div class="movie-reference">
+                <img src="{{ movie.poster.url|default:'https://via.placeholder.com/100x150/2C3E50/FFFFFF?text='|add:movie.title }}"
+                     alt="{{ movie.title }}"
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/100x150/2C3E50/FFFFFF?text={{ movie.title|urlencode }}'">
+                <div>
+                    <h3>{{ movie.title }}</h3>
+                    <p style="color: #aaa; margin-top: 5px;">Год: {{ movie.year|default:"Не указан" }}</p>
+                </div>
+            </div>
 
-    <label>Оценка:</label><br>
-    <select name="rating" required>
-        <option value="">---</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-    </select>
+            <!-- Форма -->
+            <form method="post" class="review-form" id="reviewForm">
+                {% csrf_token %}
 
-    <br><br>
+                <!-- Рейтинг -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-star"></i> Ваша оценка
+                    </label>
 
-    <label>Текст отзыва:</label><br>
-    <textarea name="text" rows="5" required></textarea>
+                    <div class="rating-selector">
+                        <div class="star-rating-input">
+                            {% for i in "12345" %}
+                            <i class="far fa-star" data-value="{{ forloop.counter }}"></i>
+                            {% endfor %}
+                        </div>
 
-    <br><br>
+                        <div class="rating-value-display" id="ratingValue">5</div>
+                        <input type="hidden" name="rating" id="hiddenRating" value="5">
+                    </div>
+                </div>
 
-    <button type="submit">Отправить</button>
-</form>
+                <!-- Текст отзыва -->
+                <div class="form-group">
+                    <label for="reviewText" class="form-label">
+                        <i class="fas fa-comment"></i> Текст отзыва
+                    </label>
+                    <textarea id="reviewText" name="text" class="form-control"
+                              placeholder="Напишите ваш отзыв здесь... Расскажите, что вам понравилось или не понравилось в фильме."
+                              rows="6" required></textarea>
+                    <p style="color: #aaa; font-size: 0.9em; margin-top: 5px;">Минимум 10 символов</p>
+                </div>
 
+                <!-- Имя (опционально) -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i> Ваше имя (опционально)
+                    </label>
+                    <input type="text" name="username" class="form-control"
+                           placeholder="Как к вам обращаться?">
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Опубликовать отзыв
+                    </button>
+                    <a href="../../../templates" class="btn-cancel">
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

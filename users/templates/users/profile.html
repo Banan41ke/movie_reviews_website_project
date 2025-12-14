@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль | Movie Reviews</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #48dbfb;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .reviews-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #feca57;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-review-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-movie-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .review-movie-poster {
+            width: 60px;
+            height: 90px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .review-content {
+            flex: 1;
+        }
+
+        .review-movie-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .review-text {
+            color: #ccc;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(254, 202, 87, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin-top: 5px;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .empty-reviews {
+            text-align: center;
+            padding: 40px;
+            color: #aaa;
+        }
+
+        .empty-reviews i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> На главную
+        </a>
+
+        <!-- ПРОФИЛЬ -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {{ user.username|first|upper }}
+            </div>
+            <div class="profile-info">
+                <h1>{{ user.username }}</h1>
+                <p style="color: #aaa;">Участник с {{ user.date_joined|date:"d.m.Y" }}</p>
+
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ reviews|length }}</div>
+                        <div class="stat-label">Отзывов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">
+                            {% if reviews %}
+                                {{ reviews|length|add:"0" }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </div>
+                        <div class="stat-label">Фильмов оценено</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">
+                            {% if reviews %}
+                                {{ reviews.0.user.username|length }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </div>
+                        <div class="stat-label">Активность</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- МОИ ОТЗЫВЫ -->
+        <div class="reviews-section">
+            <h2><i class="fas fa-comments"></i> Мои отзывы</h2>
+
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="profile-review-card">
+                    <div class="review-movie-info">
+                        <div style="min-width: 60px;">
+                            <div class="review-rating">
+                                <i class="fas fa-star"></i>
+                                <span>{{ review.rating }}</span>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <div class="review-movie-title">{{ review.movie.title }}</div>
+                            <div class="review-text">{{ review.text|truncatechars:150 }}</div>
+                            <div style="color: #666; font-size: 0.8em; margin-top: 5px;">
+                                {{ review.created_at|date:"d.m.Y H:i" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-actions">
+                        <a href="/movies/{{ review.movie.id }}/review/" class="btn" style="padding: 8px 15px; font-size: 0.9em; text-decoration: none;">
+                            <i class="fas fa-edit"></i> Изменить
+                        </a>
+                        <a href="/movies/{{ review.movie.id }}/" class="btn" style="padding: 8px 15px; font-size: 0.9em; text-decoration: none; background: rgba(72,219,251,0.2);">
+                            <i class="fas fa-external-link-alt"></i> К фильму
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-reviews">
+                    <i class="far fa-comment-dots"></i>
+                    <h3>Вы ещё не оставляли отзывов</h3>
+                    <p>Начните смотреть фильмы и делиться своим мнением!</p>
+                    <a href="/" class="btn btn-details" style="margin-top: 20px; text-decoration: none;">
+                        <i class="fas fa-film"></i> Смотреть фильмы
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

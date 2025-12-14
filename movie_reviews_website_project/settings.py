@@ -33,7 +33,7 @@ ROOT_URLCONF = 'movie_reviews_website_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'movies' / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -45,6 +45,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'movie_reviews_website_project.wsgi.application'
 
@@ -61,3 +63,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "movie_list"
+LOGOUT_REDIRECT_URL = "movie_list"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
