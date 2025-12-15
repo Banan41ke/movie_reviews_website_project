@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Reviews - Лучшие фильмы</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        // Простая функция для поиска
+        function searchMovies() {
+            const query = document.querySelector('.search-bar input').value.toLowerCase();
+            const cards = document.querySelectorAll('.movie-card');
+
+            cards.forEach(card => {
+                const title = card.querySelector('.movie-title').textContent.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Добавляем обработчик поиска
+            document.querySelector('.search-bar input').addEventListener('input', searchMovies);
+
+            // Добавляем обработчик жанрам
+            document.querySelectorAll('.genre-list a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.genre-list a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const genre = this.textContent.toLowerCase();
+                    if (genre.includes('все')) {
+                        document.querySelectorAll('.movie-card').forEach(card => {
+                            card.style.display = 'block';
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- ШАПКА -->
+        <header>
+            <h1><i class="fas fa-film"></i> MOVIE REVIEWS</h1>
+            <p class="tagline">Откройте для себя лучшие фильмы и поделитесь своим мнением</p>
+            <div class="search-bar">
+                <input type="text" placeholder="🔍 Поиск фильмов..." onkeyup="searchMovies()">
+            </div>
+        </header>
+
+        <!-- ОСНОВНОЙ КОНТЕНТ -->
+        <main>
+            <!-- САЙДБАР С ЖАНРАМИ -->
+            <aside class="genres-sidebar">
+                <h3><i class="fas fa-tags"></i> Жанры</h3>
+                <ul class="genre-list">
+                    <li><a href="#" class="active"><span class="genre-icon">🎬</span> Все фильмы</a></li>
+                    <li><a href="#"><span class="genre-icon">💥</span> Боевик</a></li>
+                    <li><a href="#"><span class="genre-icon">😂</span> Комедия</a></li>
+                    <li><a href="#"><span class="genre-icon">😢</span> Драма</a></li>
+                    <li><a href="#"><span class="genre-icon">🚀</span> Фантастика</a></li>
+                    <li><a href="#"><span class="genre-icon">🔪</span> Триллер</a></li>
+                    <li><a href="#"><span class="genre-icon">❤️</span> Мелодрама</a></li>
+                    <li><a href="#"><span class="genre-icon">👻</span> Ужасы</a></li>
+                </ul>
+            </aside>
+
+            <!-- КОНТЕЙНЕР ФИЛЬМОВ -->
+            <div class="movies-container">
+                <div class="movies-header">
+                    <h2><i class="fas fa-fire"></i> ПОПУЛЯРНЫЕ ФИЛЬМЫ</h2>
+                    <span class="movies-count">{{ movies|length }} фильмов</span>
+                </div>
+
+                <!-- СЕТКА ФИЛЬМОВ -->
+                <div class="movie-grid">
+                    {% for movie in movies %}
+                    <!-- КАРТОЧКА ФИЛЬМА - КЛИКАБЕЛЬНАЯ! -->
+                    <a href="/movies/{{ movie.id }}/" class="movie-card">
+                        <!-- РЕЙТИНГ -->
+                        <div class="rating-badge {% if movie.avg_rating >= 8 %}rating-high{% elif movie.avg_rating >= 6 %}rating-medium{% else %}rating-low{% endif %}">
+                            <i class="fas fa-star"></i>
+                            <span>{{ movie.avg_rating|default:"0.0" }}</span>
+                        </div>
+
+                        <!-- ПОСТЕР -->
+                        <div class="poster-container">
+                            <img src="{{ movie.poster.url }}"
+                                 alt="{{ movie.title }}"
+                                 class="movie-poster"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x450/2C3E50/FFFFFF?text={{ movie.title|urlencode }}'">
+                            <div class="poster-overlay">
+                                <button class="watch-now-btn" onclick="event.preventDefault(); alert('Трейлер будет доступен скоро!');">
+                                    <i class="fas fa-play"></i> Смотреть
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ИНФОРМАЦИЯ О ФИЛЬМЕ -->
+                        <div class="movie-info">
+                            <h3 class="movie-title">{{ movie.title }}</h3>
+
+                            <div class="movie-meta">
+                                <span class="year"><i class="far fa-calendar"></i> {{ movie.year }}</span>
+                                <span class="duration"><i class="far fa-clock"></i> {{ movie.duration|default:"120" }} мин</span>
+                            </div>
+
+                            <!-- ЖАНРЫ -->
+                            <div class="movie-genres">
+                                {% for genre in movie.genres|slice:":3" %}
+                                <span class="genre-tag">{{ genre }}</span>
+                                {% endfor %}
+                            </div>
+
+                            <!-- РЕЙТИНГ ЗВЕЗДАМИ -->
+                            <div class="star-rating">
+                                {% with rating=movie.avg_rating|default:0 %}
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= rating|floatformat:0 %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="rating-text">({{ movie.reviews_count|default:"0" }})</span>
+                                {% endwith %}
+                            </div>
+
+                            <!-- ОПИСАНИЕ -->
+                            <p class="movie-description">
+                                {{ movie.description|truncatechars:120|default:"Описание фильма отсутствует." }}
+                            </p>
+
+                            <!-- КНОПКА ПОДРОБНЕЕ -->
+                            <div class="card-action-btn">
+                                <i class="fas fa-info-circle"></i> Подробнее о фильме
+                            </div>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <!-- ЕСЛИ ФИЛЬМОВ НЕТ -->
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                        <i class="fas fa-film fa-4x" style="color: rgba(255,255,255,0.1); margin-bottom: 20px;"></i>
+                        <h3>Фильмы не найдены</h3>
+                        <p style="color: #aaa;">Попробуйте выбрать другой жанр</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+
+        <!-- ФУТЕР -->
+        <footer>
+            <div class="footer-links">
+                <a href="#" onclick="alert('Страница в разработке')">О проекте</a>
+                <a href="#" onclick="alert('Свяжитесь с нами: contact@moviereviews.ru')">Контакты</a>
+                <a href="#" onclick="alert('Политика конфиденциальности')">Политика конфиденциальности</a>
+                <a href="#" onclick="alert('Правила использования')">Правила использования</a>
+            </div>
+            <p class="copyright">© 2024 Movie Reviews. Все права защищены.</p>
+        </footer>
+    </div>
+</body>
+</html>

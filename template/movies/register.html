@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Movie Reviews</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Используем стили из login.html */
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            font-size: 2em;
+            color: #feca57;
+            margin-bottom: 10px;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+        }
+
+        .auth-form input:focus {
+            outline: none;
+            border-color: #48dbfb;
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #feca57, #ff9f43);
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-auth:hover {
+            background: linear-gradient(45deg, #ff9f43, #feca57);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+        }
+
+        .auth-links a {
+            color: #48dbfb;
+            text-decoration: none;
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+
+        .helptext {
+            font-size: 0.8em;
+            color: #aaa;
+            display: block;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> На главную
+        </a>
+
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1><i class="fas fa-user-plus"></i> Регистрация</h1>
+                <p>Создайте аккаунт для написания отзывов</p>
+            </div>
+
+            {% if form.errors %}
+            <div class="error-message">
+                Пожалуйста, исправьте ошибки в форме.
+            </div>
+            {% endif %}
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    {{ field }}
+                    {% if field.help_text %}
+                    <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div style="color: #ff6b6b; font-size: 0.9em; margin-top: 5px;">
+                        {{ field.errors|striptags }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-user-plus"></i> Зарегистрироваться
+                </button>
+            </form>
+
+            <div class="auth-links">
+                <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Добавляем placeholder к полям формы
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.auth-form input');
+            inputs[0].placeholder = 'Имя пользователя';
+            inputs[1].placeholder = 'Email адрес';
+            inputs[2].placeholder = 'Пароль';
+            inputs[3].placeholder = 'Подтверждение пароля';
+        });
+    </script>
+</body>
+</html>

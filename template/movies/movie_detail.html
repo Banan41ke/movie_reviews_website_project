@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} | Movie Reviews</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Добавляем обработчик для кнопки "В избранное"
+            document.querySelector('.btn-watchlist').addEventListener('click', function() {
+                const btn = this;
+                const icon = btn.querySelector('i');
+
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    btn.innerHTML = '<i class="fas fa-bookmark"></i> В избранном';
+                    alert('Фильм добавлен в избранное!');
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    btn.innerHTML = '<i class="far fa-bookmark"></i> В избранное';
+                    alert('Фильм удалён из избранного!');
+                }
+            });
+
+            // Обработчик для трейлера
+            document.querySelector('.btn-details[onclick*="трейлер"]').addEventListener('click', function() {
+                alert('Трейлер фильма "{{ movie.title }}" будет доступен скоро!');
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Назад к списку фильмов
+        </a>
+
+        <!-- ДЕТАЛИ ФИЛЬМА -->
+        <div class="movie-header">
+            <img src="{{ movie.poster.url }}"
+                 alt="{{ movie.title }}"
+                 class="movie-poster-large"
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/350x500/2C3E50/FFFFFF?text={{ movie.title|urlencode }}'">
+
+            <div class="movie-info">
+                <h1 class="movie-title-detail">{{ movie.title }}</h1>
+
+                <div class="rating-badge-large">
+                    <i class="fas fa-star"></i>
+                    <span>{{ avg_rating|default:"0.0" }}</span>
+                    <span style="font-size: 0.8em; margin-left: 10px;">/ 10</span>
+                </div>
+
+                <div class="movie-meta-detail">
+                    <div class="meta-item">
+                        <i class="far fa-calendar"></i>
+                        <span>Год: {{ movie.year|default:"Не указан" }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="far fa-clock"></i>
+                        <span>Длительность: {{ movie.duration|default:"120" }} мин</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-tags"></i>
+                        <span>Жанры: {{ movie.genres|join:", " }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-comment"></i>
+                        <span>{{ reviews|length }} отзывов</span>
+                    </div>
+                </div>
+
+                <div class="movie-description-detail">
+                    {{ movie.description|default:"Описание фильма отсутствует." }}
+                </div>
+
+                {% if movie.director %}
+                <div class="movie-meta-detail">
+                    <div class="meta-item">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Режиссёр: {{ movie.director }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-globe"></i>
+                        <span>Страна: {{ movie.country }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if movie.actors %}
+                <div class="meta-item" style="width: 100%; margin-top: 15px;">
+                    <i class="fas fa-users"></i>
+                    <span>В ролях: {{ movie.actors }}</span>
+                </div>
+                {% endif %}
+
+                <div class="action-buttons-detail">
+                    <button class="btn btn-details">
+                        <i class="fas fa-play"></i> Смотреть трейлер
+                    </button>
+                    <button class="btn btn-watchlist">
+                        <i class="far fa-bookmark"></i> В избранное
+                    </button>
+                    <a href="review/" class="btn btn-details" style="text-decoration: none;">
+                        <i class="fas fa-edit"></i> Написать отзыв
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ОТЗЫВЫ -->
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <h2><i class="fas fa-comments"></i> Отзывы
+                    {% if reviews %}
+                    <span class="review-count">{{ reviews|length }}</span>
+                    {% endif %}
+                </h2>
+                <a href="review/" class="btn btn-details" style="text-decoration: none;">
+                    <i class="fas fa-plus"></i> Добавить отзыв
+                </a>
+            </div>
+
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">
+                            {{ review.user.username|first|upper }}
+                        </div>
+                        <div>
+                            <div class="reviewer-name">{{ review.user.username }}</div>
+                            <div class="review-date">{{ review.created_at }}</div>
+                        </div>
+                    </div>
+
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i>
+                        <span>{{ review.rating }}</span>
+                        <span>/10</span>
+                    </div>
+                </div>
+
+                <div class="review-text">
+                    {{ review.text|linebreaks }}
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-reviews">
+                <i class="far fa-comment-dots"></i>
+                <h3>Пока нет отзывов</h3>
+                <p>Будьте первым, кто оставит отзыв об этом фильме!</p>
+                <a href="review/" class="btn btn-details" style="margin-top: 20px; text-decoration: none;">
+                    <i class="fas fa-edit"></i> Написать первый отзыв
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
