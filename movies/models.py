@@ -1,8 +1,10 @@
 # movies/models.py
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count
+from django.conf import settings
 
+User = get_user_model()
 
 class Genre(models.Model):
     name = models.CharField(max_length=100)
@@ -10,12 +12,11 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
-
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     release_year = models.IntegerField()
-    genres = models.ManyToManyField(Genre, related_name="movies")
+    genres = models.ManyToManyField(Genre, related_name="movies", blank=True)  # ТОЛЬКО ОДИН РАЗ!
     poster = models.ImageField(upload_to="posters/", blank=True, null=True)
     director = models.CharField(max_length=200, blank=True)
     country = models.CharField(max_length=100, blank=True)
@@ -28,8 +29,6 @@ class Movie(models.Model):
 
     def reviews_count(self):
         return self.reviews.count()
-    
-    genres = models.ManyToManyField(Genre, blank=True)
 
     def __str__(self):
         return self.title
@@ -65,5 +64,18 @@ class Comment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    def __str__(self):
+        return f"{self.user.username} - {self.movie.title}"
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey('Movie', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'movie']  # чтобы нельзя было добавить дважды
+        ordering = ['-created_at']
+        
     def __str__(self):
         return f"{self.user.username} - {self.movie.title}"

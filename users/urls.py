@@ -18,7 +18,7 @@ urlpatterns = [
         redirect_authenticated_user=True
     ), name="login"),
     
-    path("logout/", auth_views.LogoutView.as_view(
-        next_page="/"
-    ), name="logout"),
+    path("logout/", views.custom_logout, name="logout"),
+    path("profile/reviews/", views.my_reviews, name="my_reviews"),
+    path("profile/favorites/", views.favorites, name="favorites"),
 ]

@@ -1,45 +1,106 @@
 # users/views.py
+from django.contrib.auth import logout as auth_logout
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from .models import Profile
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, CustomPasswordChangeForm
-from .models import Profile
-from movies.models import Review, Comment  # Импорт из приложения movies
+from .forms import SimpleRegisterForm, SimpleUserUpdateForm, SimpleProfileUpdateForm, SimplePasswordChangeForm  
+from movies.models import Favorite, Review, Comment
+
+# ВРЕМЕННЫЕ ПРОСТЫЕ ФОРМЫ
+class SimpleUserUpdateForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    email = forms.EmailField(required=False)
+
+class SimpleProfileUpdateForm(forms.Form):
+    bio = forms.CharField(widget=forms.Textarea, required=False)
+    avatar = forms.ImageField(required=False)
 
 
-# def register_view(request):
-#     if request.method == "POST":
-#         form = RegisterForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             messages.success(request, "Регистрация прошла успешно! Добро пожаловать!")
-#             return redirect("movie_list")
-#     else:
-#         form = RegisterForm()
+def custom_logout(request):
+    """Кастомный выход с редиректом на главную"""
+    auth_logout(request)
+    return redirect('movie_list')  # или 'home', смотря как называется ваша главная
 
-#     return render(request, "users/register.html", {"form": form})
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+        
+        # Проверяем, что все поля заполнены
+        if not all([old_password, new_password1, new_password2]):
+            messages.error(request, 'Все поля обязательны для заполнения')
+            return redirect('change_password')
+        
+        # Проверяем правильность старого пароля
+        user = request.user
+        if not user.check_password(old_password):
+            messages.error(request, 'Текущий пароль введен неверно')
+            return redirect('change_password')
+        
+        # Проверяем совпадение новых паролей
+        if new_password1 != new_password2:
+            messages.error(request, 'Новые пароли не совпадают')
+            return redirect('change_password')
+        
+        # Проверяем длину пароля
+        if len(new_password1) < 8:
+            messages.error(request, 'Пароль должен содержать минимум 8 символов')
+            return redirect('change_password')
+        
+        # Меняем пароль
+        user.set_password(new_password1)
+        user.save()
+        
+        # Обновляем сессию
+        update_session_auth_hash(request, user)
+        
+        messages.success(request, 'Пароль успешно изменен!')
+        return redirect('profile')
+    
+    return render(request, 'users/change_password.html')
+
+@login_required
+def my_reviews(request):
+    """Страница с моими отзывами"""
+    reviews = Review.objects.filter(user=request.user).select_related('movie').order_by('-created_at')
+    
+    context = {
+        'reviews': reviews,
+        'reviews_count': reviews.count(),
+    }
+    return render(request, 'users/my_reviews.html', context)
+
+@login_required
+def favorites(request):
+    """Страница с избранными фильмами"""
+    favorites = Favorite.objects.filter(user=request.user).select_related('movie').order_by('-created_at')
+    
+    context = {
+        'favorites': favorites,
+        'favorites_count': favorites.count(),
+    }
+    return render(request, 'users/favorites.html', context)
 
 def register_view(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = SimpleRegisterForm(request.POST)  # Используйте SimpleRegisterForm
         if form.is_valid():
             user = form.save()
-            
-            # Создаем профиль для нового пользователя
-            Profile.objects.create(user=user)
-            
-            # Авторизуем пользователя
             login(request, user)
-            
             messages.success(request, "Регистрация прошла успешно!")
             return redirect("movie_list")
     else:
-        form = UserCreationForm()
+        form = SimpleRegisterForm()
     
     return render(request, "users/register.html", {"form": form})
+
 
 
 @login_required
@@ -57,65 +118,35 @@ def profile_view(request):
     }
     return render(request, "users/profile.html", context)
 
-
-# @login_required
-# def edit_profile_view(request):
-#     if request.method == 'POST':
-#         # Обновление email
-#         new_email = request.POST.get('email')
-#         if new_email and new_email != request.user.email:
-#             from django.contrib.auth.models import User
-#             if not User.objects.filter(email=new_email).exists():
-#                 request.user.email = new_email
-#                 request.user.save()
-#                 messages.success(request, 'Email успешно обновлен!')
-#             else:
-#                 messages.error(request, 'Этот email уже используется другим пользователем.')
-
-#         # Обновление информации профиля
-#         profile = request.user.profile
-#         profile.bio = request.POST.get('bio', '')
-#         profile.save()
-#         messages.success(request, 'Профиль успешно обновлен!')
-#         return redirect('profile')
-
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = ProfileUpdateForm(
-            request.POST, 
-            request.FILES, 
-            instance=request.user.profile
-        )
+        # Получаем данные из формы
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        bio = request.POST.get('bio')
+        avatar = request.FILES.get('avatar')
         
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Ваш профиль успешно обновлен!')
-            return redirect('profile')
-    else:
-        user_form = UserUpdateForm(instance=request.user)
-        profile_form = ProfileUpdateForm(instance=request.user.profile)
+        # Обновляем данные пользователя
+        user = request.user
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        user.save()
+        
+        # Обновляем профиль
+        profile = user.profile
+        if bio is not None:
+            profile.bio = bio
+        if avatar:
+            profile.avatar = avatar
+        profile.save()
+        
+        messages.success(request, 'Профиль успешно обновлен!')
+        return redirect('profile')
     
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-    }
-    return render(request, 'users/edit_profile.html', context)
-
-@login_required
-def change_password(request):
-    if request.method == 'POST':
-        form = CustomPasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Обновляем сессию, чтобы пользователь не разлогинился
-            update_session_auth_hash(request, user)
-            messages.success(request, 'Ваш пароль успешно изменен!')
-            return redirect('profile')
-    else:
-        form = CustomPasswordChangeForm(request.user)
-    
-    context = {'form': form}
-    return render(request, 'users/change_password.html', context)
+    # GET запрос - показываем форму с текущими данными
+    return render(request, 'users/edit_profile.html', {
+        'user': request.user
+    })

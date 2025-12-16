@@ -3,9 +3,39 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Avg
+from django.http import JsonResponse
+from .models import Favorite
 from .models import Movie, Review, Comment, Genre
 from .forms import ReviewForm, CommentForm
 
+
+@login_required
+def add_to_favorites(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    
+    favorite, created = Favorite.objects.get_or_create(
+        user=request.user,
+        movie=movie
+    )
+    
+    if created:
+        messages.success(request, f'Фильм "{movie.title}" добавлен в избранное!')
+    else:
+        messages.info(request, f'Фильм "{movie.title}" уже в избранном!')
+    
+    return redirect('movie_detail', movie_id=movie_id)
+
+@login_required
+def remove_from_favorites(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    
+    Favorite.objects.filter(user=request.user, movie=movie).delete()
+    messages.success(request, f'Фильм "{movie.title}" удален из избранного!')
+    
+    if request.GET.get('from') == 'favorites':
+        return redirect('favorites')
+    
+    return redirect('movie_detail', movie_id=movie_id)
 
 def movie_list(request):
     movies = Movie.objects.all().annotate(
