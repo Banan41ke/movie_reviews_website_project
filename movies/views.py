@@ -12,8 +12,6 @@ def movie_list(request):
         avg_rating=Avg('reviews__rating')
     ).order_by('-created_at')
 
-    genres = Genre.objects.all()
-
     # Фильтрация по жанру
     genre_id = request.GET.get('genre')
     if genre_id:
@@ -24,12 +22,16 @@ def movie_list(request):
     if search_query:
         movies = movies.filter(title__icontains=search_query)
 
+    # Все жанры
+    genres = Genre.objects.all()
+
     context = {
         'movies': movies,
         'genres': genres,
-        'selected_genre': int(genre_id) if genre_id else None,
+        'selected_genre': genre_id,
         'search_query': search_query,
     }
+    
     return render(request, 'movies/index.html', context)
 
 
