@@ -1,2 +1,2 @@
 Django==6.0
-Pillow
+Pillow >= 10

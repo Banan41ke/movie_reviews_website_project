@@ -1,4 +1,8 @@
+{% extends 'base.html' %}
+
 {% load static %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -223,6 +227,44 @@
                 </div>
             {% endif %}
         </div>
-    </div>
+
+        <!-- КНОПКИ РЕДАКТИРОВАНИЯ -->
+        <div class="edit-profile-section" style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <h2 style="color: #feca57; margin-bottom: 20px;">
+                <i class="fas fa-cog me-2"></i>Управление профилем
+            </h2>
+            
+            <div class="action-buttons" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="{% url 'edit_profile' %}" class="btn" 
+                   style="background: linear-gradient(45deg, #48dbfb, #0abde3); color: white; padding: 12px 25px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-user-edit"></i> Редактировать профиль
+                </a>
+                
+                <a href="{% url 'change_password' %}" class="btn" 
+                   style="background: linear-gradient(45deg, #feca57, #ff9f43); color: white; padding: 12px 25px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-key"></i> Изменить пароль
+                </a>
+                
+                <a href="/" class="btn" 
+                   style="background: rgba(255, 255, 255, 0.1); color: #aaa; padding: 12px 25px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-home"></i> На главную
+                </a>
+            </div>
+            
+            <div class="profile-tips" style="margin-top: 25px; background: rgba(254, 202, 87, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #feca57;">
+                <h4 style="color: #feca57; margin-bottom: 10px;">
+                    <i class="fas fa-lightbulb me-2"></i>Что можно изменить?
+                </h4>
+                <ul style="color: #ccc; margin: 0; padding-left: 20px;">
+                    <li>Имя пользователя и email</li>
+                    <li>Загрузить или изменить аватар</li>
+                    <li>Добавить информацию "О себе"</li>
+                    <li>Указать местоположение и дату рождения</li>
+                    <li>Обновить пароль для безопасности</li>
+                </ul>
+            </div>
+        </div>
+    </div> <!-- закрываем container -->
+{% endblock %}
 </body>
 </html>

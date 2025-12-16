@@ -4,6 +4,10 @@ venv/
 env/
 ENV/
 
+# База данных
+*.sqlite3
+*.db
+
 # Python
 __pycache__/
 *.py[cod]
@@ -33,3 +37,7 @@ wheels/
 *.swo
 *~
 .DS_Store
+
+# ОС
+.DS_Store
+Thumbs.db
