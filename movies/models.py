@@ -28,6 +28,8 @@ class Movie(models.Model):
 
     def reviews_count(self):
         return self.reviews.count()
+    
+    genres = models.ManyToManyField(Genre, blank=True)
 
     def __str__(self):
         return self.title

@@ -32,7 +32,7 @@ def movie_list(request):
         'search_query': search_query,
     }
     
-    return render(request, 'movies/index.html', context)
+    return render(request, 'movies/index.html', {'movies': movies})
 
 
 def movie_detail(request, movie_id):
