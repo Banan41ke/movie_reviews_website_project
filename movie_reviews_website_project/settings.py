@@ -1,7 +1,7 @@
 # movie_reviews_website_project/settings.py
 
 from pathlib import Path
-
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -51,15 +51,14 @@ WSGI_APPLICATION = 'movie_reviews_website_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'movie_reviews_db',      # База уже существует!
-        'USER': 'root',                  # Или другой пользователь
-        'PASSWORD': 'saha35411',        # Пароль от MySQL
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': config('DB_ENGINE', default='mssql'),
+        'NAME': config('DB_NAME'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='1433'),
         'OPTIONS': {
-            'charset': 'utf8mb4',
-        }
+            'driver': config('DB_DRIVER'),
+            'trusted_connection': 'yes',  # подключение через Windows Authentication
+        },
     }
 }
 
