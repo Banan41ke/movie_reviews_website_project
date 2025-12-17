@@ -42,7 +42,7 @@ def remove_from_favorites(request, movie_id):
 
 def movie_list(request):
     movies = Movie.objects.all().annotate(
-        avg_rating=Avg('reviews__rating')
+        rating_calc=Avg('reviews__rating')
     ).order_by('-created_at')
 
     genre_id = request.GET.get('genre')

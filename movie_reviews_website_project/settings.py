@@ -1,5 +1,7 @@
 # movie_reviews_website_project/settings.py
+
 from pathlib import Path
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,16 +51,17 @@ WSGI_APPLICATION = 'movie_reviews_website_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'movie_reviews_db',
-        'HOST': 'MONSIER\\SQLEXPRESS',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'movie_reviews_db',      # База уже существует!
+        'USER': 'root',                  # Или другой пользователь
+        'PASSWORD': 'saha35411',        # Пароль от MySQL
+        'HOST': 'localhost',
+        'PORT': '3306',
         'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'trusted_connection': 'yes',
-        },
+            'charset': 'utf8mb4',
+        }
     }
 }
-
 
 
 AUTH_PASSWORD_VALIDATORS = []
