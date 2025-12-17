@@ -18,10 +18,17 @@ class Movie(models.Model):
     release_year = models.IntegerField()
     genres = models.ManyToManyField(Genre, related_name="movies", blank=True)  # ТОЛЬКО ОДИН РАЗ!
     poster = models.ImageField(upload_to="posters/", blank=True, null=True)
+    trailer_url = models.URLField(
+        "Ссылка на YouTube трейлер",
+        blank=True,
+        null=True,
+    )
     director = models.CharField(max_length=200, blank=True)
     country = models.CharField(max_length=100, blank=True)
     duration = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
 
     def average_rating(self):
         avg = self.reviews.aggregate(Avg('rating'))['rating__avg']

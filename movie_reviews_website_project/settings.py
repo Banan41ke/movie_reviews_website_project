@@ -49,10 +49,17 @@ WSGI_APPLICATION = 'movie_reviews_website_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',
+        'NAME': 'movie_reviews_db',
+        'HOST': 'MONSIER\\SQLEXPRESS',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'trusted_connection': 'yes',
+        },
     }
 }
+
+
 
 AUTH_PASSWORD_VALIDATORS = []
 
