@@ -717,22 +717,27 @@ footer {
     margin-top: 10px;
 }
 
-.form-control {
+/*.form-control {
     width: 100%;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    color: white;
+    padding: 14px 16px;
+    background: rgba(15, 32, 39, 0.8);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    color: #fff;
     font-size: 1em;
-    font-family: inherit;
+}*/
+
+.form-control::placeholder {
+    color: #aaa;
 }
 
 .form-control:focus {
     outline: none;
     border-color: #48dbfb;
-    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(72, 219, 251, 0.25);
+    background: rgba(15, 32, 39, 0.95);
 }
+
 
 textarea.form-control {
     min-height: 200px;
@@ -889,4 +894,168 @@ textarea.form-control {
 .ratio iframe {
     width: 100%;
     height: 100%;
+}
+
+/* ===== EDIT PROFILE FORM ===== */
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #48dbfb;
+    box-shadow: 0 0 0 0.2rem rgba(72, 219, 251, 0.25);
+}
+
+.form-text {
+    color: #aaa;
+    font-size: 0.85em;
+}
+
+/* ===== AVATAR ===== */
+
+.avatar-wrapper {
+    position: relative;
+    color: red
+}
+
+.avatar-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: linear-gradient(45deg, #48dbfb, #0abde3);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid white;
+    transition: transform 0.2s ease;
+}
+
+.avatar-btn i {
+    color: white;
+    font-size: 1.1em;
+}
+
+.avatar-btn:hover {
+    transform: scale(1.1);
+}
+
+.edit-profile .form-label {
+    color: #feca57; /* нежно жёлто-оранжевый */
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.edit-profile .form-label i {
+    color: #ff9f43;
+}
+
+/* =========================================================
+   EDIT PROFILE — СТИЛИ (ДОБАВИТЬ В КОНЕЦ style.css)
+   ========================================================= */
+
+.edit-profile-page {
+    padding: 40px 20px;
+    border-radius: 20px;
+    color: #01579b; /* можно оставить для заголовков, текст формы будет черным */
+}
+
+.edit-profile-page .card {
+    background: linear-gradient(135deg, #2c3e50, #4f6d7a); /* сине-серый фон */
+    border-radius: 20px;
+    border: 2px solid #555555; /* темно-серая рамка */
+}
+
+.edit-profile-page .card-header {
+    background: ##333333;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.3em;
+    border-radius: 20px 20px 0 0;
+}
+
+.edit-profile-page .form-label {
+    color: #000000; /* подписи к полям черные */
+    font-weight: 600;
+}
+
+.edit-profile-page .form-control,
+.edit-profile-page textarea,
+.edit-profile-page input {
+    background: rgba(100, 140, 160, 0.9); /* чуть светлее сине-серого */
+    border: 2px solid #81d4fa;
+    color: #000000; /* черный текст */
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.edit-profile-page .form-control::placeholder,
+.edit-profile-page textarea::placeholder {
+    color: #000000; /* цвет подсказок черный */
+    opacity: 0.7; /* чуть прозрачнее */
+}
+
+.edit-profile-page .form-control:focus,
+.edit-profile-page textarea:focus,
+.edit-profile-page input:focus {
+    background: rgba(120, 160, 180, 0.9); /* серо-синий фон при нажатии */
+    border-color: #0288d1; /* цвет рамки при фокусе */
+    box-shadow: 0 0 0 3px rgba(3, 169, 244, 0.2); /* легкий свечащийся эффект */
+    color: #000000; /* текст черный */
+    outline: none;
+}
+
+.edit-profile-page .form-text {
+    color: #000000; /* подсказки под полями черные */
+    font-size: 0.95em;
+}
+
+.edit-profile-page .avatar-wrapper {
+    border: 3px solid #FFD700; /* рамка аватара золотая */
+    padding: 5px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.edit-profile-page .avatar-btn {
+    background: #FFD700;
+    border: none;
+    width: 40px;
+    height: 40px;
+    bottom: 5px;
+    right: 5px;
+}
+
+.edit-profile-page .avatar-btn i {
+    color: #000000; /* иконка камеры черная */
+}
+
+.edit-profile-page .avatar-btn:hover {
+    background: #FFC107; /* ярче золотой при наведении */
+}
+
+.edit-profile-page .btn-primary {
+    background: #FFD700; /* кнопка сохранить золотая */
+    border: none;
+    font-weight: 600;
+    color: #000000; /* текст кнопки черный */
+}
+
+.edit-profile-page .btn-primary:hover {
+    background: #FFC107; /* ярче золотой при наведении */
+}
+
+.edit-profile-page .btn-outline-secondary {
+    border-color: #FFD700;
+    color: #000000;
+}
+
+.edit-profile-page .btn-outline-secondary:hover {
+    background: #000000;
+    color: #FFD700;
 }

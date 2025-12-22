@@ -11,15 +11,6 @@ from django.contrib.auth.decorators import login_required
 from .forms import SimpleRegisterForm, SimpleUserUpdateForm, SimpleProfileUpdateForm, SimplePasswordChangeForm  
 from movies.models import Favorite, Review, Comment
 
-# ВРЕМЕННЫЕ ПРОСТЫЕ ФОРМЫ
-class SimpleUserUpdateForm(forms.Form):
-    username = forms.CharField(max_length=150)
-    email = forms.EmailField(required=False)
-
-class SimpleProfileUpdateForm(forms.Form):
-    bio = forms.CharField(widget=forms.Textarea, required=False)
-    avatar = forms.ImageField(required=False)
-
 
 def custom_logout(request):
     """Кастомный выход с редиректом на главную"""
@@ -120,33 +111,27 @@ def profile_view(request):
 
 @login_required
 def edit_profile(request):
+    user = request.user
+    profile = user.profile
+
     if request.method == 'POST':
-        # Получаем данные из формы
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        bio = request.POST.get('bio')
-        avatar = request.FILES.get('avatar')
-        
-        # Обновляем данные пользователя
-        user = request.user
-        if username:
-            user.username = username
-        if email:
-            user.email = email
-        user.save()
-        
-        # Обновляем профиль
-        profile = user.profile
-        if bio is not None:
-            profile.bio = bio
-        if avatar:
-            profile.avatar = avatar
-        profile.save()
-        
-        messages.success(request, 'Профиль успешно обновлен!')
-        return redirect('profile')
-    
-    # GET запрос - показываем форму с текущими данными
+        user_form = SimpleUserUpdateForm(request.POST, instance=user)
+        profile_form = SimpleProfileUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Профиль обновлён!')
+            return redirect('profile')
+    else:
+        user_form = SimpleUserUpdateForm(instance=user)
+        profile_form = SimpleProfileUpdateForm(instance=profile)
+
     return render(request, 'users/edit_profile.html', {
-        'user': request.user
+        'user_form': user_form,
+        'profile_form': profile_form,
     })
