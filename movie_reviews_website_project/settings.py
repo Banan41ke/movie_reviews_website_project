@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-12345'
 DEBUG = False
 ALLOWED_HOSTS = ['movie-reviews-website-project.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://movie-reviews-website-project.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -71,10 +72,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CSRF_TRUSTED_ORIGINS = ['https://movie-reviews-website-project.onrender.com']
