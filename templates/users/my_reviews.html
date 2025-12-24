@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои отзывы{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4"><i class="fas fa-comments me-2"></i>Мои отзывы</h2>
+    
+    {% if reviews %}
+        <div class="row">
+            {% for review in reviews %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">
+                                <a href="{% url 'movie_detail' review.movie.id %}" class="text-decoration-none">
+                                    {{ review.movie.title }}
+                                </a>
+                            </h5>
+                            <div class="text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <p class="card-text">{{ review.text|truncatechars:200 }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted">
+                                {{ review.created_at|date:"d.m.Y H:i" }}
+                            </small>
+                            <span class="badge bg-info">
+                                <i class="fas fa-thumbs-up me-1"></i>{{ review.likes_count }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Вы еще не оставили ни одного отзыва.
+        </div>
+        <a href="{% url 'movie_list' %}" class="btn btn-primary">
+            <i class="fas fa-film me-2"></i>Перейти к фильмам
+        </a>
+    {% endif %}
+</div>
+{% endblock %}
