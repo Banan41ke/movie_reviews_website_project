@@ -1,0 +1,385 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} | Movie Reviews</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Стили для рейтинга */
+        .rating-badge-large {
+            background: linear-gradient(45deg, #feca57, #ff9f43);
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 5px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(254, 202, 87, 0.3);
+        }
+
+        .rating-badge-large i {
+            font-size: 1.5em;
+            margin-right: 8px;
+        }
+
+        .rating-badge-large .rating-number {
+            font-size: 2em;
+            font-weight: 800;
+        }
+
+        .rating-badge-large .rating-slash {
+            font-size: 2em;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        .rating-badge-large .rating-max {
+            font-size: 2em;
+            font-weight: 800;
+            opacity: 0.9;
+        }
+
+        /* Остальные стили остаются как были */
+        .movie-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .movie-poster-large {
+            width: 350px;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .movie-info {
+            flex: 1;
+        }
+
+        .movie-title-detail {
+            font-size: 2.5em;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .movie-meta-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+            color: #aaa;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .movie-description-detail {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 1.1em;
+            margin: 20px 0;
+        }
+
+        .action-buttons-detail {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .reviews-section {
+            margin-top: 40px;
+        }
+
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #48dbfb, #0abde3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .review-rating {
+            background: rgba(254, 202, 87, 0.2);
+            color: #feca57;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'movie_list' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Назад к списку фильмов
+        </a>
+
+        <!-- ДЕТАЛИ ФИЛЬМА -->
+        <div class="movie-header">
+            {% if movie.poster %}
+                <img src="{{ movie.poster.url }}"
+                     alt="{{ movie.title }}"
+                     class="movie-poster-large"
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/350x500/2C3E50/FFFFFF?text={{ movie.title|urlencode }}'">
+            {% else %}
+                <img src="https://via.placeholder.com/350x500/2C3E50/FFFFFF?text={{ movie.title|urlencode }}"
+                     alt="{{ movie.title }}"
+                     class="movie-poster-large">
+            {% endif %}
+
+            <div class="movie-info">
+                <h1 class="movie-title-detail">{{ movie.title }}</h1>
+
+                <!-- ИСПРАВЛЕННЫЙ РЕЙТИНГ -->
+                <div class="rating-badge-large">
+                    <i class="fas fa-star"></i>
+                    <span class="rating-number">
+                        {% if movie.average_rating %}
+                            {{ movie.average_rating|floatformat:1 }}
+                        {% else %}
+                            0.0
+                        {% endif %}
+                    </span>
+                    <span class="rating-slash">/</span>
+                    <span class="rating-max">5</span>
+                </div>
+
+                <div class="movie-meta-detail">
+                    <div class="meta-item">
+                        <i class="far fa-calendar"></i>
+                        <span>Год: {{ movie.release_year|default:"Не указан" }}</span>
+                    </div>
+                    {% if movie.duration %}
+                    <div class="meta-item">
+                        <i class="far fa-clock"></i>
+                        <span>Длительность: {{ movie.duration }} мин</span>
+                    </div>
+                    {% endif %}
+                    <div class="meta-item">
+                        <i class="fas fa-tags"></i>
+                        <span>Жанры:
+                            {% for genre in movie.genres.all %}
+                                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                Не указаны
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-comment"></i>
+                        <span>{{ reviews|length }} отзывов</span>
+                    </div>
+                </div>
+
+                <div class="movie-description-detail">
+                    {{ movie.description|default:"Описание фильма отсутствует." }}
+                </div>
+
+                {% if movie.director %}
+                <div class="movie-meta-detail">
+                    <div class="meta-item">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Режиссёр: {{ movie.director }}</span>
+                    </div>
+                    {% if movie.country %}
+                    <div class="meta-item">
+                        <i class="fas fa-globe"></i>
+                        <span>Страна: {{ movie.country }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="action-buttons-detail">
+                    {% if movie.trailer_url %}
+                    <button class="btn btn-trailer" data-trailer-url="{{ movie.trailer_url }}">
+                        <i class="fas fa-play"></i> Смотреть трейлер
+                    </button>
+                    {% endif %}
+
+
+
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'add_to_favorites' movie.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-watchlist">
+                                <i class="far fa-bookmark"></i> В избранное
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'movie_detail' movie.id %}" class="btn btn-watchlist">
+                            <i class="fas fa-sign-in-alt"></i> Войдите, чтобы добавить в избранное
+                        </a>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'add_review' movie.id %}" class="btn" style="text-decoration: none;">
+                            <i class="fas fa-edit"></i> Написать отзыв
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'movie_detail' movie.id %}" class="btn" style="text-decoration: none;">
+                            <i class="fas fa-sign-in-alt"></i> Войдите, чтобы оставить отзыв
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ОТЗЫВЫ -->
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <h2><i class="fas fa-comments"></i> Отзывы
+                    {% if reviews %}
+                    <span class="review-count">{{ reviews|length }}</span>
+                    {% endif %}
+                </h2>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'add_review' movie.id %}" class="btn" style="text-decoration: none;">
+                        <i class="fas fa-plus"></i> Добавить отзыв
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                {{ review.user.username|first|upper }}
+                            </div>
+                            <div>
+                                <div class="reviewer-name">{{ review.user.username }}</div>
+                                <div class="review-date">{{ review.created_at|date:"d.m.Y H:i" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <span>
+                                {% if review.rating %}
+                                    {{ review.rating }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </span>
+                            <span>/5</span>
+                        </div>
+                    </div>
+
+                    <div class="review-text">
+                        {{ review.text|linebreaks }}
+                    </div>
+
+                    {% if user.is_authenticated and user == review.user %}
+                    <div class="review-actions">
+                        <!-- Убрали кнопку редактирования -->
+                        <a href="{% url 'delete_review' review.id %}"
+                           class="btn-small btn-danger"
+                           onclick="return confirm('Удалить этот отзыв?')">
+                            <i class="fas fa-trash"></i> Удалить отзыв
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews">
+                    <i class="far fa-comment-dots"></i>
+                    <h3>Пока нет отзывов</h3>
+                    <p>Будьте первым, кто оставит отзыв об этом фильме!</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'add_review' movie.id %}" class="btn" style="margin-top: 20px; text-decoration: none;">
+                            <i class="fas fa-edit"></i> Написать первый отзыв
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'movie_detail' movie.id %}" class="btn" style="margin-top: 20px; text-decoration: none;">
+                            <i class="fas fa-sign-in-alt"></i> Войдите, чтобы оставить отзыв
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const trailerBtn = document.querySelector('.btn-trailer');
+
+    if (trailerBtn) {
+        trailerBtn.addEventListener('click', function(e) {
+            const trailerUrl = this.getAttribute('data-trailer-url');
+            if (trailerUrl && trailerUrl.trim() !== '') {
+                window.open(trailerUrl, '_blank'); // открываем трейлер в новой вкладке
+            } else {
+                alert('Трейлер фильма "{{ movie.title }}" будет доступен скоро!');
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>

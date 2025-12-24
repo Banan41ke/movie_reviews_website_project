@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+<!-- HEADER -->
+<header class="main-header">
+    <div class="header-top">
+        <h1><i class="fas fa-film"></i> Movie Reviews</h1>
+
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-auth-link logout-btn">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-auth-link">Войти</a>
+                <a href="{% url 'register' %}" class="btn-auth-link">Регистрация</a>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <p class="tagline">Откройте для себя лучшие фильмы и поделитесь своим мнением</p>
+
+    <form method="get" class="search-bar">
+        <input
+            type="text"
+            name="search"
+            placeholder="🔍 Поиск фильмов..."
+            value="{{ search_query|default:'' }}"
+        >
+    </form>
+</header>
+
+<!-- MAIN -->
+<main class="main-layout">
+
+    <!-- GENRES -->
+    <aside class="genres-sidebar">
+        <h3><i class="fas fa-tags"></i> Жанры</h3>
+        <ul class="genre-list">
+
+            <li>
+                <a href="{% url 'movie_list' %}"
+                   class="{% if not selected_genre %}active{% endif %}">
+                    🎬 Все фильмы
+                </a>
+            </li>
+
+            {% for genre in genres %}
+                <li>
+                    <a href="?genre={{ genre.id }}"
+                       class="{% if selected_genre|stringformat:'s' == genre.id|stringformat:'s' %}active{% endif %}">
+                        {{ genre.name }}
+                    </a>
+                </li>
+            {% empty %}
+                <li>Жанров нет</li>
+            {% endfor %}
+
+        </ul>
+    </aside>
+
+    <!-- MOVIES -->
+    <section class="movies-container">
+
+        <div class="movies-header">
+            <h2><i class="fas fa-fire"></i> Фильмы</h2>
+            <span class="movies-count">{{ movies.count }} фильмов</span>
+        </div>
+
+        {% if movies %}
+        <div class="movie-grid">
+
+            {% for movie in movies %}
+            <a href="{% url 'movie_detail' movie.id %}" class="movie-card">
+
+
+
+                <div class="poster-container">
+                    {% if movie.poster %}
+                        <img src="{{ movie.poster.url }}"
+                             alt="{{ movie.title }}"
+                             class="movie-poster">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x450?text={{ movie.title|urlencode }}"
+                             class="movie-poster">
+                    {% endif %}
+                </div>
+
+                <div class="movie-info">
+                    <h3 class="movie-title">{{ movie.title }}</h3>
+
+                    <div class="movie-meta">
+                        <span><i class="far fa-calendar"></i> {{ movie.release_year }}</span>
+                        {% if movie.duration %}
+                            <span><i class="far fa-clock"></i> {{ movie.duration }} мин</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="movie-description">
+                        {{ movie.description|truncatechars:120 }}
+                    </p>
+
+                    <div class="card-action-btn">
+                        <i class="fas fa-info-circle"></i> Подробнее
+                    </div>
+                </div>
+
+            </a>
+            {% endfor %}
+
+        </div>
+        {% else %}
+            <div class="no-movies">
+                <i class="fas fa-film fa-3x"></i>
+                <p>Фильмы не найдены</p>
+            </div>
+        {% endif %}
+
+    </section>
+
+</main>
+
+</div>
+{% endblock %}
