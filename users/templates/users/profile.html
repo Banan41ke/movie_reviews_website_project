@@ -1,4 +1,8 @@
+{% extends 'base.html' %}
+
 {% load static %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -145,12 +149,40 @@
         <!-- ПРОФИЛЬ -->
         <div class="profile-header">
             <div class="profile-avatar">
-                {{ user.username|first|upper }}
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}"
+                         alt="Аватар"
+                         style="
+                            width: 120px;
+                            height: 120px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                         ">
+                {% else %}
+                    {{ user.username|first|upper }}
+                {% endif %}
             </div>
             <div class="profile-info">
                 <h1>{{ user.username }}</h1>
                 <p style="color: #aaa;">Участник с {{ user.date_joined|date:"d.m.Y" }}</p>
+                {% if user.profile.bio or user.email %}
+                    <div class="mt-3 p-3 rounded"
+                         style="background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
 
+                        {% if user.profile.bio %}
+                            <p style="margin-bottom: 8px; color:#ddd;">
+                                <i class="fas fa-quote-left me-2 text-warning"></i>
+                                {{ user.profile.bio }}
+                            </p>
+                        {% endif %}
+
+                        {% if user.email %}
+                            <p style="margin:0; color:#aaa;">
+                                <i class="fas fa-envelope me-2"></i>{{ user.email }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 <div class="profile-stats">
                     <div class="stat-item">
                         <div class="stat-number">{{ reviews|length }}</div>
@@ -223,6 +255,44 @@
                 </div>
             {% endif %}
         </div>
-    </div>
+
+        <!-- КНОПКИ РЕДАКТИРОВАНИЯ -->
+        <div class="edit-profile-section" style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <h2 style="color: #feca57; margin-bottom: 20px;">
+                <i class="fas fa-cog me-2"></i>Управление профилем
+            </h2>
+            
+            <div class="action-buttons" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="{% url 'edit_profile' %}" class="btn" 
+                   style="background: linear-gradient(45deg, #48dbfb, #0abde3); color: white; padding: 12px 25px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-user-edit"></i> Редактировать профиль
+                </a>
+                
+                <a href="{% url 'change_password' %}" class="btn" 
+                   style="background: linear-gradient(45deg, #feca57, #ff9f43); color: white; padding: 12px 25px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-key"></i> Изменить пароль
+                </a>
+                
+                <a href="/" class="btn" 
+                   style="background: rgba(255, 255, 255, 0.1); color: #aaa; padding: 12px 25px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-home"></i> На главную
+                </a>
+            </div>
+            
+            <div class="profile-tips" style="margin-top: 25px; background: rgba(254, 202, 87, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #feca57;">
+                <h4 style="color: #feca57; margin-bottom: 10px;">
+                    <i class="fas fa-lightbulb me-2"></i>Что можно изменить?
+                </h4>
+                <ul style="color: #ccc; margin: 0; padding-left: 20px;">
+                    <li>Имя пользователя и email</li>
+                    <li>Загрузить или изменить аватар</li>
+                    <li>Добавить информацию "О себе"</li>
+                    <li>Указать местоположение и дату рождения</li>
+                    <li>Обновить пароль для безопасности</li>
+                </ul>
+            </div>
+        </div>
+    </div> <!-- закрываем container -->
+{% endblock %}
 </body>
 </html>

@@ -1,50 +1,63 @@
 # users/forms.py
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from .models import Profile
 
-
-class RegisterForm(UserCreationForm):
-    email = forms.EmailField(
-        required=True,
-        label="Email",
-        widget=forms.EmailInput(attrs={
-            "placeholder": "Email"
-        }),
-        help_text="Введите ваш email"
-    )
-
+# Простая форма регистрации
+class SimpleRegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    
     class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2")
+        fields = ['username', 'email', 'password1', 'password2']
+
+# Простая форма обновления пользователя
+class SimpleProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio']
         widgets = {
-            "username": forms.TextInput(attrs={
-                "placeholder": "Имя пользователя"
+            'bio': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Расскажите немного о себе…',
+                'rows': 4
             }),
-            "password1": forms.PasswordInput(attrs={
-                "placeholder": "Пароль"
-            }),
-            "password2": forms.PasswordInput(attrs={
-                "placeholder": "Подтверждение пароля"
+            'avatar': forms.FileInput(attrs={
+                'class': 'form-control'
             }),
         }
         help_texts = {
-            'username': 'Максимум 150 символов. Только буквы, цифры и символы @/./+/-/_',
+            'bio': 'Этот текст будет отображаться в вашем профиле',
+            'avatar': 'PNG / JPG до 2 МБ',
         }
 
+
+
+# Простая форма обновления профиля
+class SimpleUserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите имя пользователя'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'email@example.com'
+            }),
+        }
+        help_texts = {
+            'username': 'Это имя будет видно другим пользователям',
+            'email': 'Необязательно',
+        }
+
+
+# Простая форма смены пароля
+class SimplePasswordChangeForm(PasswordChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password2'].help_text = 'Повторите пароль для подтверждения'
-
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Пользователь с таким email уже существует")
-        return email
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data["email"]
-        if commit:
-            user.save()
-        return user
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
