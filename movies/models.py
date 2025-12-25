@@ -5,8 +5,14 @@ from django.db.models import Avg, Count
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+import uuid
+
 
 User = get_user_model()
+
+def poster_upload_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return f'posters/{uuid.uuid4()}.{ext}'
 
 
 class Genre(models.Model):
@@ -49,7 +55,7 @@ class Movie(models.Model):
         db_table="movie_genres"  # ← ДОБАВЛЕНО: явное имя таблицы для SQL Server
     )
     poster = models.ImageField(
-        upload_to="posters/",
+        upload_to=poster_upload_path,
         blank=True,
         null=True,
         max_length=500  # ← ДОБАВЛЕНО: SQL Server требует max_length для ImageField

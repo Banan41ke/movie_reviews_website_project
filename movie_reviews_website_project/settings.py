@@ -70,8 +70,21 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+INSTALLED_APPS += [
+    'cloudinary',
+    'cloudinary_storage',
+]
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUD_NAME'),
+    'API_KEY': config('CLOUD_API_KEY'),
+    'API_SECRET': config('CLOUD_API_SECRET'),
+}
+
+MEDIA_URL = '/media/'  # можно оставить, но не используется
+
 
 
 LOGIN_URL = '/login/'
