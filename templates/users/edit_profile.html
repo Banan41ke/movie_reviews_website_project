@@ -22,16 +22,19 @@
                         <div class="text-center mb-4">
                             <div class="position-relative d-inline-block avatar-wrapper">
 
-                                <img
-                                    src="{{ request.user.profile.avatar.url }}"
-                                    id="avatarPreview"
-                                    class="rounded-circle shadow"
-                                    style="width:160px;height:160px;object-fit:cover;border:4px solid rgba(255,255,255,0.25);"
-                                >
+                                {% if request.user.profile.avatar %}
+                                    <img
+                                        src="{{ request.user.profile.avatar.url }}"
+                                        id="avatarPreview"
+                                        class="rounded-circle shadow"
+                                        style="width:160px;height:160px;object-fit:cover;border:4px solid rgba(255,255,255,0.25);"
+                                    >
+                                {% endif %}
+
 
                                 <label class="avatar-btn">
                                     <i class="fas fa-camera"></i>
-                                    <input type="file" name="avatar" id="avatar" accept="image/*" hidden>
+                                    {{ profile_form.avatar }}
                                 </label>
 
                             </div>
@@ -46,14 +49,7 @@
                                 Имя пользователя
                             </label>
 
-                            <input
-                                type="text"
-                                name="username"
-                                value="{{ user.username }}"
-                                class="form-control form-control-lg"
-                                placeholder="Введите имя пользователя"
-                                required
-                            >
+                            {{ user_form.username }}
 
                             <div class="form-text">
                                 Это имя будет видно другим пользователям
@@ -67,13 +63,8 @@
                                 Email
                             </label>
 
-                            <input
-                                type="email"
-                                name="email"
-                                value="{{ user.email }}"
-                                class="form-control"
-                                placeholder="email@example.com"
-                            >
+                            {{ user_form.email }}
+
 
                             <div class="form-text">
                                 Необязательно
@@ -87,12 +78,8 @@
                                 О себе
                             </label>
 
-                            <textarea
-                                name="bio"
-                                rows="4"
-                                class="form-control"
-                                placeholder="Расскажите немного о себе..."
-                            >{{ request.user.profile.bio }}</textarea>
+                            {{ profile_form.bio }}
+
 
                             <div class="form-text">
                                 Этот текст будет отображаться в вашем профиле
@@ -118,12 +105,14 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const avatarInput = document.getElementById('avatar');
+    const avatarInput = document.getElementById('id_avatar');
     const avatarPreview = document.getElementById('avatarPreview');
+
+    if (!avatarInput) return;
 
     avatarInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
-        if (file) {
+        if (file && avatarPreview) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 avatarPreview.src = e.target.result;
@@ -131,11 +120,8 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.readAsDataURL(file);
         }
     });
-
-    document.querySelector('.avatar-wrapper').addEventListener('click', function() {
-        avatarInput.click();
-    });
 });
 </script>
+
 
 {% endblock %}

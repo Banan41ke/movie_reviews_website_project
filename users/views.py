@@ -97,7 +97,6 @@ def register_view(request):
 @login_required
 def profile_view(request):
     user = request.user
-<<<<<<< HEAD
     profile = user.profile
 
     reviews = Review.objects.filter(user=user) \
@@ -111,23 +110,11 @@ def profile_view(request):
     return render(request, "users/profile.html", {
         'user': user,
         'profile': profile,
-=======
-    reviews = Review.objects.filter(user=user).select_related('movie').order_by('-created_at')
-    comments = Comment.objects.filter(user=user).select_related('movie').order_by('-created_at')
-
-    context = {
-        'user': user,
->>>>>>> 41ed5fd5187ab39341d77cca20e710c0fa006da1
         'reviews': reviews,
         'comments': comments,
         'reviews_count': reviews.count(),
         'comments_count': comments.count(),
-<<<<<<< HEAD
     })
-=======
-    }
-    return render(request, "users/profile.html", context)
->>>>>>> 41ed5fd5187ab39341d77cca20e710c0fa006da1
 
 @login_required
 def edit_profile(request):
@@ -136,7 +123,6 @@ def edit_profile(request):
 
     if request.method == 'POST':
         user_form = SimpleUserUpdateForm(request.POST, instance=user)
-<<<<<<< HEAD
         profile_form = SimpleProfileUpdateForm(request.POST, request.FILES, instance=profile)
 
         print("=== DEBUG ===")
@@ -154,19 +140,6 @@ def edit_profile(request):
             print("user_form errors:", user_form.errors)
             print("profile_form errors:", profile_form.errors)
 
-=======
-        profile_form = SimpleProfileUpdateForm(
-            request.POST,
-            request.FILES,
-            instance=profile
-        )
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Профиль обновлён!')
-            return redirect('profile')
->>>>>>> 41ed5fd5187ab39341d77cca20e710c0fa006da1
     else:
         user_form = SimpleUserUpdateForm(instance=user)
         profile_form = SimpleProfileUpdateForm(instance=profile)
@@ -174,8 +147,4 @@ def edit_profile(request):
     return render(request, 'users/edit_profile.html', {
         'user_form': user_form,
         'profile_form': profile_form,
-<<<<<<< HEAD
     })
-=======
-    })
->>>>>>> 41ed5fd5187ab39341d77cca20e710c0fa006da1
