@@ -85,7 +85,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY':    config('API_KEY'),
     'API_SECRET': config('API_SECRET'),
 }
-
+cloudinary.config(**CLOUDINARY_STORAGE)
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
