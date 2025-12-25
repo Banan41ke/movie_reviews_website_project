@@ -116,17 +116,23 @@ def edit_profile(request):
 
     if request.method == 'POST':
         user_form = SimpleUserUpdateForm(request.POST, instance=user)
-        profile_form = SimpleProfileUpdateForm(
-            request.POST,
-            request.FILES,
-            instance=profile
-        )
+        profile_form = SimpleProfileUpdateForm(request.POST, request.FILES, instance=profile)
 
+        print("=== DEBUG ===")
+        print("POST data:", request.POST)
+        print("FILES data:", request.FILES)
+        print("user_form valid:", user_form.is_valid())
+        print("profile_form valid:", profile_form.is_valid())
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+            print("=== SAVED ===")
             messages.success(request, 'Профиль обновлён!')
             return redirect('profile')
+        else:
+            print("user_form errors:", user_form.errors)
+            print("profile_form errors:", profile_form.errors)
+
     else:
         user_form = SimpleUserUpdateForm(instance=user)
         profile_form = SimpleProfileUpdateForm(instance=profile)
