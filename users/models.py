@@ -25,13 +25,13 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'Profile of {self.user.username}'
-    
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        
-        if self.avatar and self.avatar.name != 'avatars/default.png':
+
+        if self.avatar and hasattr(self.avatar, 'path') and os.path.exists(self.avatar.path):
             img = Image.open(self.avatar.path)
+
             if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
+                img.thumbnail((300, 300))
                 img.save(self.avatar.path)
