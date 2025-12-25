@@ -60,7 +60,10 @@ WSGI_APPLICATION = 'movie_reviews_website_project.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL', '').strip(),
+        os.environ.get(
+            'DATABASE_URL',
+            f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     )

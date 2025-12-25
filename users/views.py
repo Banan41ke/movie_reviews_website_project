@@ -97,17 +97,24 @@ def register_view(request):
 @login_required
 def profile_view(request):
     user = request.user
-    reviews = Review.objects.filter(user=user).select_related('movie').order_by('-created_at')
-    comments = Comment.objects.filter(user=user).select_related('movie').order_by('-created_at')
+    profile = user.profile
 
-    context = {
+    reviews = Review.objects.filter(user=user) \
+        .select_related('movie') \
+        .order_by('-created_at')
+
+    comments = Comment.objects.filter(user=user) \
+        .select_related('movie') \
+        .order_by('-created_at')
+
+    return render(request, "users/profile.html", {
         'user': user,
+        'profile': profile,
         'reviews': reviews,
         'comments': comments,
         'reviews_count': reviews.count(),
         'comments_count': comments.count(),
-    }
-    return render(request, "users/profile.html", context)
+    })
 
 @login_required
 def edit_profile(request):
