@@ -1,14 +1,15 @@
 # users/models.py
 from django.db import models
 from django.contrib.auth.models import User
-
+from cloudinary.models import CloudinaryField
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.ImageField(
-        upload_to='avatars/',
-        default='avatars/default.png',  # дефолтный аватар
+    avatar = CloudinaryField(
+        'image',
+        folder='avatars',
+        default='avatars/default.png',
         blank=True,
         null=True
     )
@@ -21,4 +22,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'Profile of {self.user.username}'
-
