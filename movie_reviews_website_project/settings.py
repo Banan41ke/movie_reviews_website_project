@@ -3,6 +3,8 @@ import os
 import dj_database_url
 from pathlib import Path
 from decouple import config
+import cloudinary
+import cloudinary_storage
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -96,3 +98,9 @@ LOGOUT_REDIRECT_URL = '/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+cloudinary.config(
+    cloud_name=config('CLOUD_NAME'),
+    api_key=config('CLOUD_API_KEY'),
+    api_secret=config('CLOUD_API_SECRET'),
+)
