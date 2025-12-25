@@ -7,3 +7,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('', include('movies.urls')),
 ]
+
+if not settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
