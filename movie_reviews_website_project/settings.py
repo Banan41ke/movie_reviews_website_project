@@ -21,8 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'cloudinary',
     'cloudinary_storage',
+    'cloudinary',
 
     'movies',
     'users.apps.UsersConfig',
@@ -86,11 +86,6 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': config('CLOUD_API_SECRET'),
 }
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-
-
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -98,9 +93,3 @@ LOGOUT_REDIRECT_URL = '/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-cloudinary.config(
-    cloud_name=config('CLOUD_NAME'),
-    api_key=config('CLOUD_API_KEY'),
-    api_secret=config('CLOUD_API_SECRET'),
-)

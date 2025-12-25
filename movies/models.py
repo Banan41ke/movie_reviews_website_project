@@ -6,13 +6,10 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 import uuid
+from cloudinary.models import CloudinaryField
 
 
 User = get_user_model()
-
-def poster_upload_path(instance, filename):
-    ext = filename.split('.')[-1]
-    return f'posters/{uuid.uuid4()}.{ext}'
 
 
 class Genre(models.Model):
@@ -54,11 +51,11 @@ class Movie(models.Model):
         blank=True,
         db_table="movie_genres"  # ← ДОБАВЛЕНО: явное имя таблицы для SQL Server
     )
-    poster = models.ImageField(
-        upload_to=poster_upload_path,
+    poster = CloudinaryField(
+        'image',
+        folder='posters',
         blank=True,
-        null=True,
-        max_length=500  # ← ДОБАВЛЕНО: SQL Server требует max_length для ImageField
+        null=True
     )
     trailer_url = models.URLField(
         blank=True,
