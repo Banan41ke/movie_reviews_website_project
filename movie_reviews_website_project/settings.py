@@ -8,7 +8,7 @@ import cloudinary_storage
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-12345'
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
 ALLOWED_HOSTS = ['movie-reviews-website-project.onrender.com']
 CSRF_TRUSTED_ORIGINS = ['https://movie-reviews-website-project.onrender.com']
@@ -60,7 +60,7 @@ WSGI_APPLICATION = 'movie_reviews_website_project.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.parse(
-        os.environ.get('DATABASE_URL'),
+        os.environ.get('DATABASE_URL', '').strip(),
         conn_max_age=600,
         conn_health_checks=True,
     )
@@ -82,8 +82,8 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUD_NAME'),
-    'API_KEY': config('CLOUD_API_KEY'),
-    'API_SECRET': config('CLOUD_API_SECRET'),
+    'API_KEY': config('API_KEY'),
+    'API_SECRET': config('API_SECRET'),
 }
 
 LOGIN_URL = '/login/'
