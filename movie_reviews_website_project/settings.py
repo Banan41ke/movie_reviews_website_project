@@ -82,8 +82,8 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUD_NAME'),
-    'API_KEY':    config('CLOUD_API_KEY'),   # ← было API_KEY
-    'API_SECRET': config('CLOUD_API_SECRET'),
+    'API_KEY':    config('API_KEY'),
+    'API_SECRET': config('API_SECRET'),
 }
 
 LOGIN_URL = '/login/'
