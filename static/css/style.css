@@ -1152,3 +1152,4 @@ footer {
     header h1 { font-size: 1.8rem; }
     .movie-grid { gap: 15px; }
 }
+.navbar { background: #1e1e1e !important; }
