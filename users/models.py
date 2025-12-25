@@ -23,15 +23,3 @@ class Profile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f'Profile of {self.user.username}'
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if self.avatar and hasattr(self.avatar, 'path') and os.path.exists(self.avatar.path):
-            img = Image.open(self.avatar.path)
-
-            if img.height > 300 or img.width > 300:
-                img.thumbnail((300, 300))
-                img.save(self.avatar.path)

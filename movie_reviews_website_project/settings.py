@@ -6,7 +6,7 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-12345'
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['movie-reviews-website-project.onrender.com']
 CSRF_TRUSTED_ORIGINS = ['https://movie-reviews-website-project.onrender.com']
 
