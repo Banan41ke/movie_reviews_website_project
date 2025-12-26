@@ -13,79 +13,61 @@
     </a>
 
     <!-- ПРОФИЛЬ -->
-    <div class="profile-header">
-        <div class="profile-avatar">
-            {% if profile.avatar %}
-                <img
-                    src="{{ profile.avatar.url }}"
-                    alt="Аватар"
-                    class="profile-avatar-img"
-                >
-            {% else %}
-                <div class="profile-avatar-placeholder">
-                    {{ user.username|first|upper }}
-                </div>
-            {% endif %}
-        </div>
+    <!-- ВЕРХ: аватар+имя || статистика -->
+    <div class="profile-top-grid">
 
-        <div class="profile-info">
-            <h1>{{ user.username }}</h1>
-            <p style="color: #aaa;">
-                Участник с {{ user.date_joined|date:"d.m.Y" }}
-            </p>
-
-            {% if profile.bio or user.email %}
-                <div class="mt-3 p-3 rounded"
-                     style="background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
-
-                    {% if profile.bio %}
-                        <p style="margin-bottom: 8px; color:#ddd;">
-                            <i class="fas fa-quote-left me-2 text-warning"></i>
-                            {{ profile.bio }}
-                        </p>
-                    {% endif %}
-
-
-                    {% if user.email %}
-                        <p style="margin:0; color:#aaa;">
-                            <i class="fas fa-envelope me-2"></i>
-                            {{ user.email }}
-                        </p>
-                    {% endif %}
-
-                </div>
-            {% endif %}
-
-            <!-- СТАТИСТИКА -->
-            <style>
-            .edit-profile-page{
-                color:#e5e5e5;          /* тёплый светло-серый */
-            }
-            .edit-profile-page h1,
-            .edit-profile-page h2,
-            .edit-profile-page .stat-number{
-                color:#ffffff;          /* заголовки и цифры – белые */
-            }
-            </style>
-
-            {# ---------- 2. Красивый блок статистики ---------- #}
-            <div class="profile-stats-card">
-                <div class="stat-row">
-                    <span class="stat-label-sm">Отзывов</span>
-                    <span class="stat-digit">{{ reviews|length }}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label-sm">Фильмов оценено</span>
-                    <span class="stat-digit">{{ reviews|length }}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label-sm">Активность</span>
-                    <span class="stat-digit">{% if reviews %}✔{% else %}—{% endif %}</span>
-                </div>
+        <!-- ЛЕВАЯ КАРТОЧКА -->
+        <div class="user-card">
+            <div class="profile-avatar">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="Аватар" class="profile-avatar-img">
+                {% else %}
+                    <div class="profile-avatar-placeholder">
+                        {{ user.username|first|upper }}
+                    </div>
+                {% endif %}
             </div>
 
+            <div class="user-names">
+                <h1>{{ user.username }}</h1>
+                <p class="reg-date">Участник с {{ user.date_joined|date:"d.m.Y" }}</p>
+            </div>
         </div>
+
+        <!-- ПРАВАЯ КАРТОЧКА (статистика) -->
+        <div class="profile-stats-card">
+            <div class="stat-row">
+                <span class="stat-label-sm">Отзывов</span>
+                <span class="stat-digit">{{ reviews|length }}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label-sm">Фильмов оценено</span>
+                <span class="stat-digit">{{ reviews|length }}</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label-sm">Активность</span>
+                <span class="stat-digit">{% if reviews %}✔{% else %}—{% endif %}</span>
+            </div>
+        </div>
+
     </div>
+
+    <!-- ОПИСАНИЕ ПОЛЬЗОВАТЕЛЯ (если есть) -->
+    {% if profile.bio or user.email %}
+    <div class="mt-3 p-3 rounded"
+         style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); max-width:60%;">
+        {% if profile.bio %}
+            <p style="margin-bottom:8px;color:#ddd;">
+                <i class="fas fa-quote-left me-2 text-warning"></i>{{ profile.bio }}
+            </p>
+        {% endif %}
+        {% if user.email %}
+            <p style="margin:0;color:#aaa;">
+                <i class="fas fa-envelope me-2"></i>{{ user.email }}
+            </p>
+        {% endif %}
+    </div>
+    {% endif %}
         <!-- МОИ ОТЗЫВЫ -->
     <div class="reviews-section">
         <h2>

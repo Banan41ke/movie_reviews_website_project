@@ -1092,3 +1092,58 @@ textarea.form-control {
     font-weight:600;
     color:#ffffff;
 }
+
+/* ---------- круглая аватарка ---------- */
+.profile-avatar-img,
+.profile-avatar-placeholder{
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.5rem;
+    font-weight:600;
+    background:linear-gradient(45deg,#48dbfb,#0abde3);
+    color:#fff;
+}
+
+/* ---------- общая карточка пользователя ---------- */
+.user-card{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:16px;
+    padding:25px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    min-width:260px;
+}
+
+.user-names{
+    line-height:1.4;
+}
+.user-names h1{margin:0;font-size:1.5rem;}
+.user-names .reg-date{font-size:.85rem;color:#aaa;}
+
+/* ---------- контейнер для сетки «слева – справа» ---------- */
+.profile-top-grid{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:30px;
+    margin-bottom:35px;
+}
+
+/* ---------- блок статистики ---------- */
+.profile-stats-card{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:22px 28px;
+    width:100%;
+    max-width:420px;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    backdrop-filter:blur(4px);
+}
