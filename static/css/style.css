@@ -1198,3 +1198,61 @@ textarea.form-control {
 }
 .profile-bio-mail p{margin:8px 0;}
 .profile-bio-mail i{color:#feca57;}
+
+/* === МОБИЛЬНЫЕ СТИЛИ (до 600 px) === */
+@media (max-width: 600px) {
+
+    /* --- контейнеры и карточки --- */
+    .container,
+    .main-layout,
+    .movies-container,
+    .review-form-container {
+        padding: 10px 15px;
+    }
+
+    /* --- заголовки --- */
+    h1, h2, h3 {
+        font-size: 1.4rem;
+    }
+
+    /* --- кнопки и поля --- */
+    .btn,
+    .form-control,
+    input[type="text"],
+    input[type="number"],
+    textarea {
+        width: 100%;
+        font-size: 1.2rem;
+        min-height: 56px;
+        padding: 14px 12px;
+        margin-bottom: 10px;
+    }
+
+    /* --- звёзды рейтинга --- */
+    .star-rating-input i {
+        font-size: 2rem;
+    }
+
+    /* --- фильтр / рамки --- */
+    .filter-sidebar,
+    .year-bar {
+        max-width: 100%;
+        padding: 12px;
+    }
+
+    /* --- карточки фильмов --- */
+    .movie-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .movie-poster {
+        width: 100%;
+        max-width: 220px;
+    }
+
+    /* --- убираем горизонтальный скролл --- */
+    body {
+        overflow-x: hidden;
+    }
+}
