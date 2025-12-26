@@ -7,18 +7,13 @@
 <div class="container">
     <style>
     .card.fav-card {
-    max-width: 220px;   /* ← сузили карточку до примерно телефона */
+    max-width: 240px;   /* ← сузили карточку до примерно телефона */
     margin: 0 auto;     /* центрируем по горизонтали */
     }
     .card.fav-card .card-img-top {
         border-radius: 0;
     }
         /* --- компактные кнопки --- */
-    .btn-xxs {
-        padding: 2px 6px;
-        font-size: 0.7rem;
-        line-height: 1;
-    }
 
     /* --- меньший промежуток между карточками --- */
     .row.g-2 {          /* ставим на родительский .row */
@@ -37,12 +32,12 @@
     }
     .fav-card {
         width: 100%;
-        height: 320px;        /* ← ОДНА высота для всех */
+        height: 350px;        /* ← ОДНА высота для всех */
         display: flex;
         flex-direction: column;
     }
     .fav-card .card-img-top {
-        height: 190px;        /* постер занимает верхнюю часть */
+        height: 230px;        /* постер занимает верхнюю часть */
         object-fit: cover;
         border-radius: 0;
     }
@@ -76,11 +71,11 @@
                 <h6 class="card-title mb-1">{{ favorite.movie.title|truncatechars:18 }}</h6>
                 <small class="text-muted d-block mb-2">{{ favorite.movie.year }}</small>
 
-                <div class="d-flex justify-content-between">
-                  <a href="{% url 'movie_detail' favorite.movie.id %}" class="btn btn-primary btn-xxs">См.</a>
+                <div class="d-flex justify-content-between gap-1">
+                  <a href="{% url 'movie_detail' favorite.movie.id %}" class="btn btn-primary btn-sm">Смотреть</a>
                   <form action="{% url 'remove_from_favorites' favorite.movie.id %}" method="post" class="d-inline">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger btn-xxs">Уд.</button>
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Удалить</button>
                   </form>
                 </div>
               </div>
