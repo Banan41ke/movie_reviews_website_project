@@ -6,19 +6,12 @@
 {% block content %}
 <div class="container">
     <style>
-    .card-img-top {
-        border-radius: 0;          /* убираем лишнее скругление */
-    }
-        /* ограничиваем высоту всей карточки */
     .card.fav-card {
-        max-height: 420px;          /* ← регулируй по вкусу */
+    max-width: 220px;   /* ← сузили карточку до примерно телефона */
+    margin: 0 auto;     /* центрируем по горизонтали */
     }
-    /* постер внутри рамки 2:3 и не выше карточки */
     .card.fav-card .card-img-top {
-        aspect-ratio: 2 / 3;
-        object-fit: contain;
-        background: #000;
-        max-height: 250px;          /* ← чтоб не вылезал */
+        border-radius: 0;
     }
     </style>
     <h2 class="mb-4"><i class="fas fa-star me-2"></i>Избранное</h2>
@@ -27,15 +20,15 @@
         <div class="row">
             {% for favorite in favorites %}
             <div class="col-md-4 mb-4">
-                <<div class="card h-100 fav-card">
+                <div class="card h-100 fav-card">
                     {% if favorite.movie.poster %}
                         <img src="{{ favorite.movie.poster.url }}"
                              class="card-img-top"
                              alt="{{ favorite.movie.title }}"
-                             style="aspect-ratio: 2/3; object-fit: contain; background: #000;">
+                             style="width: 100%; height: auto; border-radius: 0;">
                     {% else %}
-                        <div class="card-img-top d-flex align-items-center justify-content-center"
-                             style="aspect-ratio: 2/3; background: #000;">
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                             style="height: 250px; border-radius: 0;">
                             <i class="fas fa-film fa-3x text-light"></i>
                         </div>
                     {% endif %}
