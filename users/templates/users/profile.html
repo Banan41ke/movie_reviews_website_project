@@ -13,44 +13,36 @@
     </a>
 
     <!-- ПРОФИЛЬ -->
-    <!-- ВЕРХ: аватар+имя || статистика -->
-    <div class="profile-top-grid">
-
-        <!-- ЛЕВАЯ КАРТОЧКА -->
-        <div class="user-card">
-            <div class="profile-avatar">
+    <!-- 1. Компактная карточка -->
+    <div class="profile-card">
+        <div class="profile-card-left">
+            <div class="avatar-circle">
                 {% if profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" alt="Аватар" class="profile-avatar-img">
+                    <img src="{{ profile.avatar.url }}" alt="">
                 {% else %}
-                    <div class="profile-avatar-placeholder">
-                        {{ user.username|first|upper }}
-                    </div>
+                    <span>{{ user.username|first|upper }}</span>
                 {% endif %}
             </div>
-
-            <div class="user-names">
+            <div class="name-date">
                 <h1>{{ user.username }}</h1>
-                <p class="reg-date">Участник с {{ user.date_joined|date:"d.m.Y" }}</p>
+                <p>участник с {{ user.date_joined|date:"d.m.Y" }}</p>
             </div>
         </div>
 
-        <!-- ПРАВАЯ КАРТОЧКА (статистика) -->
-        <div class="profile-stats-card">
-            <div class="stat-row">
-                <span class="stat-label-sm">Отзывов</span>
-                <span class="stat-digit">{{ reviews|length }}</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label-sm">Фильмов оценено</span>
-                <span class="stat-digit">{{ reviews|length }}</span>
-            </div>
-            <div class="stat-row">
-                <span class="stat-label-sm">Активность</span>
-                <span class="stat-digit">{% if reviews %}✔{% else %}—{% endif %}</span>
-            </div>
+        <div class="profile-card-right">
+            <div class="stat-mini"><span>{{ reviews|length }}</span><small>отзывов</small></div>
+            <div class="stat-mini"><span>{{ reviews|length }}</span><small>фильмов</small></div>
+            <div class="stat-mini"><span>{% if reviews %}✔{% else %}—{% endif %}</span><small>активность</small></div>
         </div>
-
     </div>
+
+    <!-- 2. Описание / e-mail (если есть) -->
+    {% if profile.bio or user.email %}
+    <div class="profile-bio-mail">
+        {% if profile.bio %}<p><i class="fas fa-quote-left me-2 text-warning"></i>{{ profile.bio }}</p>{% endif %}
+        {% if user.email %}<p><i class="fas fa-envelope me-2"></i>{{ user.email }}</p>{% endif %}
+    </div>
+    {% endif %}
 
     <!-- ОПИСАНИЕ ПОЛЬЗОВАТЕЛЯ (если есть) -->
     {% if profile.bio or user.email %}
