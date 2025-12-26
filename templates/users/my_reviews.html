@@ -54,5 +54,18 @@
             <i class="fas fa-film me-2"></i>Перейти к фильмам
         </a>
     {% endif %}
+<style>
+/* видимый текст на белых карточках */
+.card-text,
+.card-title a,
+.text-muted,
+.badge.bg-info,
+small.text-muted {
+    color: #333 !important;   /* тёмно-серый */
+}
+/* звёзды и иконки чуть ярче */
+.text-warning   { color: #f0ad4e !important; }
+.badge.bg-info  { background-color: #17a2b8 !important; }
+</style>
 </div>
 {% endblock %}
