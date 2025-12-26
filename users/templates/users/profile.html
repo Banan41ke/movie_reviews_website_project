@@ -57,22 +57,30 @@
             {% endif %}
 
             <!-- СТАТИСТИКА -->
-            <div class="profile-stats">
-                <div class="stat-item">
-                    <div class="stat-number">{{ reviews|length }}</div>
-                    <div class="stat-label">Отзывов</div>
-                </div>
+            <style>
+            .edit-profile-page{
+                color:#e5e5e5;          /* тёплый светло-серый */
+            }
+            .edit-profile-page h1,
+            .edit-profile-page h2,
+            .edit-profile-page .stat-number{
+                color:#ffffff;          /* заголовки и цифры – белые */
+            }
+            </style>
 
-                <div class="stat-item">
-                    <div class="stat-number">{{ reviews|length }}</div>
-                    <div class="stat-label">Фильмов оценено</div>
+            {# ---------- 2. Красивый блок статистики ---------- #}
+            <div class="profile-stats-card">
+                <div class="stat-row">
+                    <span class="stat-label-sm">Отзывов</span>
+                    <span class="stat-digit">{{ reviews|length }}</span>
                 </div>
-
-                <div class="stat-item">
-                    <div class="stat-number">
-                        {% if reviews %}✔{% else %}—{% endif %}
-                    </div>
-                    <div class="stat-label">Активность</div>
+                <div class="stat-row">
+                    <span class="stat-label-sm">Фильмов оценено</span>
+                    <span class="stat-digit">{{ reviews|length }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label-sm">Активность</span>
+                    <span class="stat-digit">{% if reviews %}✔{% else %}—{% endif %}</span>
                 </div>
             </div>
 
