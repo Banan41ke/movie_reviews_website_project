@@ -11,4 +11,5 @@ urlpatterns = [
     path("comment/<int:comment_id>/delete/", views.delete_comment, name="delete_comment"),
     path('<int:movie_id>/favorite/add/', views.add_to_favorites, name='add_to_favorites'),
     path('<int:movie_id>/favorite/remove/', views.remove_from_favorites, name='remove_from_favorites'),
+    path("year/<int:year>/", views.movies_by_year, name="movies_by_year"),
 ]

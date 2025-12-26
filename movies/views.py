@@ -49,16 +49,24 @@ def movie_list(request):
     if genre_id:
         movies = movies.filter(genres__id=genre_id)
 
+    year = request.GET.get('year')
+    if year and year.isdigit():
+        movies = movies.filter(release_year=int(year))
+
     search_query = request.GET.get('search', '')
     if search_query:
         movies = movies.filter(title__icontains=search_query)
+
+    years = Movie.objects.dates('release_year', 'year', order='DESC')
 
     genres = Genre.objects.all()
 
     context = {
         'movies': movies,
         'genres': genres,
+        'years': years,
         'selected_genre': genre_id,
+        'selected_year': year,
         'search_query': search_query,
     }
 
@@ -196,3 +204,17 @@ def delete_comment(request, comment_id):
     messages.success(request, 'Комментарий успешно удален!')
     return redirect('movie_detail', movie_id=movie_id)
 
+def movies_by_year(request, year):
+    """Фильтр по году (аналог movies_by_genre)."""
+    movies = Movie.objects.filter(release_year=year).annotate(
+        rating_calc=Avg('reviews__rating')
+    ).order_by('-created_at')
+
+    genres = Genre.objects.all()
+    return render(request, 'movies/index.html', {
+        'movies': movies,
+        'genres': genres,
+        'selected_year': year,
+        'selected_genre': None,
+        'search_query': '',
+    })
