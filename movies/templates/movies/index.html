@@ -112,29 +112,6 @@
         </ul>
     </aside>
 
-    <!-- ГОДЫ -->
-    <aside class="years-sidebar">
-        <h3><i class="fas fa-calendar"></i> Годы</h3>
-        <ul class="year-list">
-            <li>
-                <a href="{% url 'movie_list' %}"
-                   class="{% if not selected_year %}active{% endif %}">
-                    📅 Все годы
-                </a>
-            </li>
-            {% for year in years %}
-                <li>
-                    <a href="?year={{ year.year }}"
-                       class="{% if selected_year|stringformat:'s' == year.year|stringformat:'s' %}active{% endif %}">
-                        {{ year.year }}
-                    </a>
-                </li>
-            {% empty %}
-                <li>Годов нет</li>
-            {% endfor %}
-        </ul>
-    </aside>
-
     <!-- MOVIES -->
     <section class="movies-container">
 
