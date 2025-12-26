@@ -134,8 +134,21 @@
                     <label class="form-label">
                         <i class="fas fa-user"></i> Ваше имя (опционально)
                     </label>
-                    <input type="text" name="username" class="form-control"
-                           placeholder="Как к вам обращаться?">
+                    <!-- Имя – шире и выше -->
+                        <input type="text"
+                               name="username"
+                               class="form-control"
+                               placeholder="Как к вам обращаться?"
+                               style="width: 100%; height: 48px; font-size: 1.1em;">
+
+                        <!-- Отзыв – выше и шире -->
+                        <textarea id="reviewText"
+                                  name="text"
+                                  class="form-control"
+                                  placeholder="Напишите ваш отзыв здесь..."
+                                  rows="8"
+                                  style="width: 100%; min-height: 200px; font-size: 1.1em; resize: vertical;"
+                                  required></textarea>
                 </div>
 
                 <div class="form-buttons">
