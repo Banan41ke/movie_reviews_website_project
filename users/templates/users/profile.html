@@ -94,12 +94,13 @@
                     </div>
 
                     <div class="review-actions">
+                        {% comment %}
                         <a href="{% url 'edit_review' review.movie.id %}"
                            class="btn"
                            style="padding: 8px 15px; font-size: 0.9em;">
                             <i class="fas fa-edit"></i> Изменить
                         </a>
-
+                        {% endcomment %}
                         <a href="{% url 'movie_detail' review.movie.id %}"
                            class="btn"
                            style="padding: 8px 15px; font-size: 0.9em; background: rgba(72,219,251,0.2);">
