@@ -55,6 +55,18 @@
     }
     /* миниатюрные кнопки оставляем */
     .btn-xxs { padding: 2px 6px; font-size: 0.7rem; }
+        /* поднимаем кнопки выше */
+    .fav-card .card-body {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* ← было space-between */
+        padding: 10px 12px;
+        gap: 6px;                  /* микро-отступ между текстом и кнопками */
+    }
+    .fav-card .card-body .d-flex {
+        margin-top: auto;          /* кнопки «прилипают» к верху, но не к низу */
+    }
     </style>
     <h2 class="mb-4"><i class="fas fa-star me-2"></i>Избранное</h2>
 
