@@ -87,29 +87,52 @@
 <main class="main-layout">
 
     <!-- GENRES -->
-    <aside class="genres-sidebar">
-        <h3><i class="fas fa-tags"></i> Жанры</h3>
-        <ul class="genre-list">
+    <!-- ЕДИНАЯ ФОРМА: Год + Жанр -->
+    <aside class="filter-sidebar">
+        <form method="get" id="filterForm" class="filter-form">
 
-            <li>
-                <a href="{% url 'movie_list' %}"
-                   class="{% if not selected_genre %}active{% endif %}">
-                    🎬 Все фильмы
-                </a>
-            </li>
+            <!-- ГОД -->
+            <div class="filter-group">
+                <label for="yearInput">Год:</label>
+                <input type="number"
+                       id="yearInput"
+                       name="year"
+                       placeholder="2025"
+                       min="1900"
+                       max="2100"
+                       value="{{ selected_year|default:'' }}"
+                       onchange="this.form.submit()">
+            </div>
 
-            {% for genre in genres %}
-                <li>
-                    <a href="?genre={{ genre.id }}"
-                       class="{% if selected_genre|stringformat:'s' == genre.id|stringformat:'s' %}active{% endif %}">
-                        {{ genre.name }}
-                    </a>
-                </li>
-            {% empty %}
-                <li>Жанров нет</li>
-            {% endfor %}
+            <!-- ЖАНРЫ (radio) -->
+            <div class="filter-group">
+                <label>Жанр:</label>
+                <ul class="genre-radio">
+                    <li>
+                        <label>
+                            <input type="radio" name="genre" value=""
+                                   {% if not selected_genre %}checked{% endif %}
+                                   onchange="this.form.submit()">
+                            Все жанры
+                        </label>
+                    </li>
+                    {% for genre in genres %}
+                    <li>
+                        <label>
+                            <input type="radio" name="genre" value="{{ genre.id }}"
+                                   {% if selected_genre|stringformat:'s' == genre.id|stringformat:'s' %}checked{% endif %}
+                                   onchange="this.form.submit()">
+                            {{ genre.name }}
+                        </label>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-        </ul>
+            <!-- ПОИСК (скрыто) -->
+            <input type="hidden" name="search" value="{{ search_query|default:'' }}">
+
+        </form>
     </aside>
 
     <!-- MOVIES -->
