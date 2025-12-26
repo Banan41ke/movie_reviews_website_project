@@ -1185,13 +1185,16 @@ textarea.form-control {
 .stat-mini span{display:block;font-size:1.5rem;font-weight:600;}
 .stat-mini small{font-size:.75rem;color:#aaa;}
 
-/* описание / почта */
+/* ---------- единое описание ---------- */
 .profile-bio-mail{
-    margin-top:15px;
-    padding:15px 20px;
-    background:rgba(255,255,255,.04);
-    border-left:3px solid #feca57;
-    border-radius:8px;
-    font-size:.95rem;
-    color:#ddd;
+    margin-top:20px;
+    padding:18px 25px;
+    background:rgba(255,255,255,.06);
+    border-left:4px solid #feca57;
+    border-radius:10px;
+    font-size:1.1rem;          /* крупнее */
+    line-height:1.6;
+    color:#f2f2f2;             /* светлый, но не белый */
 }
+.profile-bio-mail p{margin:8px 0;}
+.profile-bio-mail i{color:#feca57;}
