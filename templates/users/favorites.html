@@ -41,9 +41,10 @@
     overflow: hidden;     /* обрезаем лишнее */
     }
     .fav-card .card-img-top {
-        height: 260px;        /* постер выше */
-        object-fit: cover;
-        border-radius: 8px 8px 0 0; /* скругление сверху */
+    height: 240px;              /* чуть ниже – меньше обрезки */
+    object-fit: cover;
+    object-position: center top; /* показываем верх, не трогаем низ */
+    border-radius: 8px 8px 0 0;
     }
     .fav-card .card-body {
         flex: 1 0 auto;
