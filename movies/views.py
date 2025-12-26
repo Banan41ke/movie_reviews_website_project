@@ -57,7 +57,7 @@ def movie_list(request):
     if search_query:
         movies = movies.filter(title__icontains=search_query)
 
-    years = Movie.objects.dates('release_year', 'year', order='DESC')
+    years = Movie.objects.values_list('release_year', flat=True).distinct().order_by('-release_year')
 
     genres = Genre.objects.all()
 
