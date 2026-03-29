@@ -1,10 +1,17 @@
+# movie_reviews_website_project/settings.py
+import os
+import dj_database_url
 from pathlib import Path
+from decouple import config
+import cloudinary
+import cloudinary_storage
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-12345'
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['movie-reviews-website-project.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://movie-reviews-website-project.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -14,13 +21,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Наши приложения
+    'cloudinary_storage',
+    'cloudinary',
+
     'movies',
-    'users',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -46,26 +56,47 @@ TEMPLATES = [
     },
 ]
 
-
-
 WSGI_APPLICATION = 'movie_reviews_website_project.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        os.environ.get(
+            'DATABASE_URL',
+            f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+        ),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
+
+
+AUTH_PASSWORD_VALIDATORS = []
+
+LANGUAGE_CODE = 'ru-ru'
+TIME_ZONE = 'Europe/Moscow'
+USE_I18N = True
+USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "movie_list"
-LOGOUT_REDIRECT_URL = "movie_list"
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUD_NAME'),
+    'API_KEY':    config('API_KEY'),
+    'API_SECRET': config('API_SECRET'),
+}
+cloudinary.config(
+    cloud_name=config('CLOUD_NAME'),
+    api_key=config('API_KEY'),
+    api_secret=config('API_SECRET')
+)
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

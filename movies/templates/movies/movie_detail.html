@@ -254,12 +254,27 @@
                 {% endif %}
 
                 <div class="action-buttons-detail">
-                    <button class="btn btn-trailer">
+                    {% if movie.trailer_url %}
+                    <button class="btn btn-trailer" data-trailer-url="{{ movie.trailer_url }}">
                         <i class="fas fa-play"></i> Смотреть трейлер
                     </button>
-                    <button class="btn btn-watchlist">
-                        <i class="far fa-bookmark"></i> В избранное
-                    </button>
+                    {% endif %}
+
+
+
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'add_to_favorites' movie.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-watchlist">
+                                <i class="far fa-bookmark"></i> В избранное
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'movie_detail' movie.id %}" class="btn btn-watchlist">
+                            <i class="fas fa-sign-in-alt"></i> Войдите, чтобы добавить в избранное
+                        </a>
+                    {% endif %}
+
                     {% if user.is_authenticated %}
                         <a href="{% url 'add_review' movie.id %}" class="btn" style="text-decoration: none;">
                             <i class="fas fa-edit"></i> Написать отзыв
@@ -349,38 +364,22 @@
             {% endif %}
         </div>
     </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const trailerBtn = document.querySelector('.btn-trailer');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Добавляем обработчик для кнопки "В избранное"
-            const watchlistBtn = document.querySelector('.btn-watchlist');
-            if (watchlistBtn) {
-                watchlistBtn.addEventListener('click', function() {
-                    const btn = this;
-                    const icon = btn.querySelector('i');
-
-                    if (icon.classList.contains('far')) {
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                        btn.innerHTML = '<i class="fas fa-bookmark"></i> В избранном';
-                        alert('Фильм добавлен в избранное!');
-                    } else {
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                        btn.innerHTML = '<i class="far fa-bookmark"></i> В избранное';
-                        alert('Фильм удалён из избранного!');
-                    }
-                });
-            }
-
-            // Обработчик для трейлера
-            const trailerBtn = document.querySelector('.btn-trailer');
-            if (trailerBtn) {
-                trailerBtn.addEventListener('click', function() {
-                    alert('Трейлер фильма "{{ movie.title }}" будет доступен скоро!');
-                });
+    if (trailerBtn) {
+        trailerBtn.addEventListener('click', function(e) {
+            const trailerUrl = this.getAttribute('data-trailer-url');
+            if (trailerUrl && trailerUrl.trim() !== '') {
+                window.open(trailerUrl, '_blank'); // открываем трейлер в новой вкладке
+            } else {
+                alert('Трейлер фильма "{{ movie.title }}" будет доступен скоро!');
+                e.preventDefault();
             }
         });
-    </script>
+    }
+});
+</script>
 </body>
 </html>

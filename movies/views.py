@@ -3,34 +3,68 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Avg
+from django.http import JsonResponse
+from .models import Favorite
 from .models import Movie, Review, Comment, Genre
 from .forms import ReviewForm, CommentForm
 
 
+@login_required
+def add_to_favorites(request, movie_id):
+    if request.method != 'POST':
+        return redirect('movie_detail', movie_id=movie_id)
+
+    movie = get_object_or_404(Movie, id=movie_id)
+
+    favorite, created = Favorite.objects.get_or_create(
+        user=request.user,
+        movie=movie
+    )
+
+    if created:
+        messages.success(request, f'Фильм «{movie.title}» добавлен в избранное!')
+    else:
+        messages.info(request, f'Фильм «{movie.title}» уже в избранном.')
+
+    return redirect('movie_detail', movie_id=movie_id)
+
+@login_required
+def remove_from_favorites(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    
+    Favorite.objects.filter(user=request.user, movie=movie).delete()
+    messages.success(request, f'Фильм "{movie.title}" удален из избранного!')
+    
+    if request.GET.get('from') == 'favorites':
+        return redirect('favorites')
+    
+    return redirect('movie_detail', movie_id=movie_id)
+
 def movie_list(request):
     movies = Movie.objects.all().annotate(
-        avg_rating=Avg('reviews__rating')
+        rating_calc=Avg('reviews__rating')
     ).order_by('-created_at')
 
-    genres = Genre.objects.all()
-
-    # Фильтрация по жанру
     genre_id = request.GET.get('genre')
     if genre_id:
         movies = movies.filter(genres__id=genre_id)
 
-    # Поиск
     search_query = request.GET.get('search', '')
     if search_query:
         movies = movies.filter(title__icontains=search_query)
 
+    genres = Genre.objects.all()
+
     context = {
         'movies': movies,
         'genres': genres,
-        'selected_genre': int(genre_id) if genre_id else None,
+        'selected_genre': genre_id,
         'search_query': search_query,
     }
-    return render(request, 'movies/index.html', context)
+
+    return render(request, 'movies/index.html', context)  # передаём весь context
+
+
 
 
 def movie_detail(request, movie_id):
@@ -161,3 +195,4 @@ def delete_comment(request, comment_id):
     comment.delete()
     messages.success(request, 'Комментарий успешно удален!')
     return redirect('movie_detail', movie_id=movie_id)
+

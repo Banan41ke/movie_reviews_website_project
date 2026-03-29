@@ -1,118 +1,16 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Reviews - Лучшие фильмы</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Дополнительные стили для исправления проблем */
-        .rating-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(45deg, #feca57, #ff9f43);
-            color: #000;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            z-index: 2;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            min-width: 60px;
-            justify-content: center;
-        }
 
-        .movie-card {
-            position: relative;
-            text-decoration: none;
-            display: block;
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .poster-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .movie-info {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0 0 10px 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: none;
-            transition: all 0.3s ease;
-        }
-
-        .movie-card:hover .movie-info {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #feca57;
-        }
-
-        .movie-title {
-            color: #fff;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .movie-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 12px;
-            color: #aaa;
-            font-size: 0.9em;
-        }
-
-        .movie-description {
-            color: #ccc;
-            font-size: 0.95em;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #feca57;
-            font-weight: bold;
-            font-size: 0.9em;
-            transition: transform 0.2s ease;
-        }
-
-        .movie-card:hover .card-action-btn {
-            transform: translateX(5px);
-        }
-    </style>
-</head>
-<body>
+{% block content %}
 <div class="container">
 
 <!-- HEADER -->
 <header class="main-header">
     <div class="header-top">
-        <h1><i class="fas fa-film"></i> MOVIE REVIEWS</h1>
+        <h1><i class="fas fa-film"></i> Movie Reviews</h1>
 
         <div class="auth-buttons">
             {% if user.is_authenticated %}
-                <span class="user-greeting">Привет, {{ user.username }}!</span>
                 <form method="post" action="{% url 'logout' %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn-auth-link logout-btn">Выйти</button>
@@ -121,53 +19,75 @@
                 <a href="{% url 'login' %}" class="btn-auth-link">Войти</a>
                 <a href="{% url 'register' %}" class="btn-auth-link">Регистрация</a>
             {% endif %}
+
         </div>
     </div>
 
     <p class="tagline">Откройте для себя лучшие фильмы и поделитесь своим мнением</p>
 
-    <div class="search-bar">
-        <input type="text" placeholder="🔍 Поиск фильмов..." id="searchInput">
-    </div>
+    <form method="get" class="search-bar">
+        <input
+            type="text"
+            name="search"
+            placeholder="🔍 Поиск фильмов..."
+            value="{{ search_query|default:'' }}"
+        >
+    </form>
 </header>
 
-<!-- MAIN CONTENT -->
-<main>
+<!-- MAIN -->
+<main class="main-layout">
+
+    <!-- GENRES -->
     <aside class="genres-sidebar">
         <h3><i class="fas fa-tags"></i> Жанры</h3>
         <ul class="genre-list">
-            <li><a href="#" class="active">🎬 Все фильмы</a></li>
-            <li><a href="#">💥 Боевик</a></li>
-            <li><a href="#">😂 Комедия</a></li>
-            <li><a href="#">😢 Драма</a></li>
-            <li><a href="#">🚀 Фантастика</a></li>
-            <li><a href="#">🔪 Триллер</a></li>
-            <li><a href="#">❤️ Мелодрама</a></li>
-            <li><a href="#">👻 Ужасы</a></li>
+
+            <li>
+                <a href="{% url 'movie_list' %}"
+                   class="{% if not selected_genre %}active{% endif %}">
+                    🎬 Все фильмы
+                </a>
+            </li>
+
+            {% for genre in genres %}
+                <li>
+                    <a href="?genre={{ genre.id }}"
+                       class="{% if selected_genre|stringformat:'s' == genre.id|stringformat:'s' %}active{% endif %}">
+                        {{ genre.name }}
+                    </a>
+                </li>
+            {% empty %}
+                <li>Жанров нет</li>
+            {% endfor %}
+
         </ul>
     </aside>
 
-    <div class="movies-container">
+    <!-- MOVIES -->
+    <section class="movies-container">
+
         <div class="movies-header">
-            <h2><i class="fas fa-fire"></i> Популярные фильмы</h2>
-            <span class="movies-count">{{ movies|length }} фильмов</span>
+            <h2><i class="fas fa-fire"></i> Фильмы</h2>
+            <span class="movies-count">{{ movies.count }} фильмов</span>
         </div>
 
+        {% if movies %}
         <div class="movie-grid">
+
             {% for movie in movies %}
             <a href="{% url 'movie_detail' movie.id %}" class="movie-card">
-                <!-- ТОЛЬКО бейдж с рейтингом, без количества отзывов -->
-                <div class="rating-badge">
-                    <i class="fas fa-star"></i> {{ movie.avg_rating|floatformat:1 }}
-                </div>
+
+
 
                 <div class="poster-container">
-                    {% if movie.poster and movie.poster.url %}
-                        <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="movie-poster"
-                             onerror="this.src='https://via.placeholder.com/300x450?text={{ movie.title|urlencode }}'">
+                    {% if movie.poster %}
+                        <img src="{{ movie.poster.url }}"
+                             alt="{{ movie.title }}"
+                             class="movie-poster">
                     {% else %}
                         <img src="https://via.placeholder.com/300x450?text={{ movie.title|urlencode }}"
-                             alt="{{ movie.title }}" class="movie-poster">
+                             class="movie-poster">
                     {% endif %}
                 </div>
 
@@ -182,79 +102,28 @@
                     </div>
 
                     <p class="movie-description">
-                        {{ movie.description|truncatechars:120|default:"Описание отсутствует." }}
+                        {{ movie.description|truncatechars:120 }}
                     </p>
 
                     <div class="card-action-btn">
                         <i class="fas fa-info-circle"></i> Подробнее
                     </div>
                 </div>
+
             </a>
-            {% empty %}
+            {% endfor %}
+
+        </div>
+        {% else %}
             <div class="no-movies">
                 <i class="fas fa-film fa-3x"></i>
-                <p>Фильмы не найдены.</p>
+                <p>Фильмы не найдены</p>
             </div>
-            {% endfor %}
-        </div>
-    </div>
+        {% endif %}
+
+    </section>
+
 </main>
 
-<!-- FOOTER -->
-<footer>
-    <div class="footer-links">
-        <a href="#">О проекте</a>
-        <a href="#">Контакты</a>
-        <a href="#">Политика конфиденциальности</a>
-    </div>
-    <p>© 2024 Movie Reviews</p>
-</footer>
-
 </div>
-
-<script>
-    function searchMovies() {
-        const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.movie-card');
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-            const title = card.querySelector('.movie-title').textContent.toLowerCase();
-            if (query === '' || title.includes(query)) {
-                card.style.display = 'block';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        // Обновляем счетчик фильмов
-        const countElement = document.querySelector('.movies-count');
-        if (countElement) {
-            countElement.textContent = visibleCount + ' фильмов';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', searchMovies);
-        }
-
-        // Обработка жанров
-        const genreLinks = document.querySelectorAll('.genre-list a');
-        genreLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                genreLinks.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-
-                // Здесь можно добавить фильтрацию по жанрам
-                alert('Фильтрация по жанрам будет реализована позже');
-            });
-        });
-    });
-</script>
-
-</body>
-</html>
+{% endblock %}
